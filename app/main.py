@@ -289,7 +289,10 @@ async def send_message(session_id: str, body: MessageContent):
         visible_content = ""
 
         async for chunk in stream_response(system_prompt, conversation_history):
-            if chunk["type"] == "visible":
+            if chunk["type"] == "error":
+                yield f"data: {json.dumps(chunk)}\n\n"
+                return
+            elif chunk["type"] == "visible":
                 yield f"data: {json.dumps(chunk)}\n\n"
             elif chunk["type"] == "done":
                 full_content = chunk["full_content"]
