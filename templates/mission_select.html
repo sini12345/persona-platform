@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ persona.name }} — Vælg mission{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto p-6">
+    <div class="mb-6">
+        <a href="/personas/{{ persona_id }}/scenarios" class="text-sm text-slate-400 hover:text-slate-600">&larr; Alle scenarier</a>
+    </div>
+
+    <div class="mb-6">
+        <h1 class="text-xl font-semibold text-slate-900">{{ scenario.title }}</h1>
+        <p class="text-sm text-slate-500 mt-1">{{ scenario.situation }}</p>
+    </div>
+
+    <h2 class="text-lg font-medium text-slate-800 mb-4">Vælg din mission</h2>
+    <p class="text-sm text-slate-500 mb-4">Missionen giver dig et konkret fokus. Du kan også vælge åben dialog uden mission.</p>
+
+    <div class="space-y-3">
+        {% for mission in missions %}
+        <form method="POST" action="/sessions/new">
+            <input type="hidden" name="persona_id" value="{{ persona_id }}">
+            <input type="hidden" name="scenario_number" value="{{ scenario.number }}">
+            <input type="hidden" name="mission" value="{{ mission.id }}">
+            <button type="submit" class="w-full text-left bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-400 hover:shadow-md transition-all">
+                <div class="flex items-start gap-3">
+                    <span class="bg-slate-800 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold flex-shrink-0">{{ mission.id }}</span>
+                    <p class="text-sm text-slate-700 leading-relaxed pt-1">{{ mission.text }}</p>
+                </div>
+            </button>
+        </form>
+        {% endfor %}
+
+        <form method="POST" action="/sessions/new">
+            <input type="hidden" name="persona_id" value="{{ persona_id }}">
+            <input type="hidden" name="scenario_number" value="{{ scenario.number }}">
+            <input type="hidden" name="mission" value="">
+            <button type="submit" class="w-full text-left bg-slate-50 rounded-xl border border-dashed border-slate-300 p-5 hover:border-slate-400 hover:bg-white transition-all">
+                <div class="flex items-start gap-3">
+                    <span class="bg-slate-200 text-slate-600 rounded-full w-8 h-8 flex items-center justify-center text-sm flex-shrink-0">~</span>
+                    <div class="pt-1">
+                        <p class="text-sm font-medium text-slate-600">Åben dialog</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Ingen specifik mission. Du navigerer frit.</p>
+                    </div>
+                </div>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

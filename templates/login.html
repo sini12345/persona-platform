@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Log ind — Persona Træning{% endblock %}
+
+{% block body %}
+<div class="min-h-full flex items-center justify-center p-4">
+    <div class="w-full max-w-sm">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-semibold text-slate-900 mb-2">Persona Træning</h1>
+            <p class="text-slate-500 text-sm">Øv samtaler med AI-personaer fra socialpædagogisk praksis</p>
+        </div>
+
+        <form hx-post="/auth/login" hx-target="#login-error" hx-swap="innerHTML" class="space-y-4">
+            <div>
+                <label for="code" class="block text-sm font-medium text-slate-700 mb-1">Holdkode</label>
+                <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    placeholder="Fx TEST2026"
+                    autocomplete="off"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-transparent outline-none text-center uppercase tracking-wider text-lg"
+                    required
+                >
+            </div>
+            <button
+                type="submit"
+                class="w-full py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-700 transition-colors"
+            >
+                Start
+            </button>
+            <div id="login-error" class="text-center text-red-500 text-sm"></div>
+        </form>
+
+        <p class="text-center text-slate-400 text-xs mt-8">
+            Få holdkoden fra din underviser
+        </p>
+    </div>
+</div>
+{% endblock %}

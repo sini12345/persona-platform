@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block title %}Samtale med {{ persona.name }}{% endblock %}
+
+{% block head %}
+<script>
+    // Auto-scroll to bottom of chat
+    function scrollToBottom() {
+        const chat = document.getElementById('chat-messages');
+        if (chat) chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Handle SSE streaming response
+    function initChat() {
+        const form = document.getElementById('chat-form');
+        const input = document.getElementById('chat-input');
+        const messages = document.getElementById('chat-messages');
+        const sendBtn = document.getElementById('send-btn');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (!text) return;
+
+            // Add user message to chat
+            const userBubble = document.createElement('div');
+            userBubble.className = 'flex justify-end fade-in';
+            userBubble.innerHTML = `<div class="chat-bubble-user px-4 py-3 max-w-[80%]"><p class="text-sm">${escapeHtml(text)}</p></div>`;
+            messages.appendChild(userBubble);
+
+            // Clear input and disable
+            input.value = '';
+            sendBtn.disabled = true;
+            input.disabled = true;
+
+            // Show typing indicator
+            typingIndicator.classList.remove('hidden');
+            scrollToBottom();
+
+            // Create persona response bubble
+            const personaBubble = document.createElement('div');
+            personaBubble.className = 'flex justify-start fade-in';
+            personaBubble.innerHTML = `<div class="chat-bubble-persona px-4 py-3 max-w-[80%]"><p class="text-sm response-text"></p></div>`;
+            messages.appendChild(personaBubble);
+            const responseText = personaBubble.querySelector('.response-text');
+
+            try {
+                const response = await fetch(`/sessions/{{ session_id }}/send`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({content: text})
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                let isFirstVisible = true;
+
+                while (true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value, {stream: true});
+                    // Parse SSE events
+                    const lines = chunk.split('\n');
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6));
+                                if (data.type === 'visible') {
+                                    if (isFirstVisible) {
+                                        typingIndicator.classList.add('hidden');
+                                        isFirstVisible = false;
+                                    }
+                                    responseText.innerHTML += escapeHtml(data.text);
+                                    scrollToBottom();
+                                } else if (data.type === 'done') {
+                                    // Final: replace with properly formatted content
+                                    responseText.innerHTML = formatResponse(data.visible_content);
+                                    scrollToBottom();
+                                } else if (data.type === 'end') {
+                                    // Persona ended the conversation
+                                    if (data.ended_by === 'persona') {
+                                        showEndedBanner('{{ persona.name }} har afsluttet samtalen.');
+                                    }
+                                }
+                            } catch (e) {
+                                // Skip malformed JSON
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                typingIndicator.classList.add('hidden');
+                responseText.innerHTML = '<span class="text-red-300">Fejl ved forbindelse. Prøv igen.</span>';
+            }
+
+            // Re-enable input
+            sendBtn.disabled = false;
+            input.disabled = false;
+            input.focus();
+            scrollToBottom();
+        });
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function formatResponse(text) {
+        // Convert *italics* (non-verbal cues) to actual italics
+        return escapeHtml(text).replace(/\*([^*]+)\*/g, '<em class="text-slate-400">$1</em>');
+    }
+
+    function showEndedBanner(message) {
+        const banner = document.getElementById('ended-banner');
+        const bannerText = document.getElementById('ended-text');
+        bannerText.textContent = message;
+        banner.classList.remove('hidden');
+        document.getElementById('chat-form').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initChat();
+        scrollToBottom();
+    });
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="h-full flex flex-col max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b border-slate-200 bg-white">
+        <div class="flex items-center gap-3">
+            <span class="text-xl">{{ persona.icon }}</span>
+            <div>
+                <h1 class="font-semibold text-slate-900 text-sm">{{ persona.name }}</h1>
+                <p class="text-xs text-slate-400">{{ scenario_title }}</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            {% if mission %}
+            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-full">Mission {{ mission }}</span>
+            {% endif %}
+            <form method="POST" action="/sessions/{{ session_id }}/end">
+                <button type="submit" class="text-xs text-slate-400 hover:text-red-500 transition-colors px-3 py-1 rounded-lg hover:bg-red-50">
+                    Afslut samtale
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chat messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+        {% for msg in messages %}
+        <div class="flex {{ 'justify-end' if msg.role == 'user' else 'justify-start' }}">
+            <div class="{{ 'chat-bubble-user' if msg.role == 'user' else 'chat-bubble-persona' }} px-4 py-3 max-w-[80%]">
+                <p class="text-sm">{{ msg.visible_content or msg.content | safe }}</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Typing indicator -->
+        <div id="typing-indicator" class="flex justify-start hidden">
+            <div class="chat-bubble-persona px-4 py-3">
+                <div class="typing-indicator flex gap-1">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ended banner -->
+    <div id="ended-banner" class="hidden p-4 bg-slate-100 border-t border-slate-200 text-center">
+        <p id="ended-text" class="text-sm text-slate-600 mb-3"></p>
+        <a href="/sessions/{{ session_id }}/context" class="px-4 py-2 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors">
+            Se kontekst
+        </a>
+    </div>
+
+    <!-- Input form -->
+    <form id="chat-form" class="p-4 border-t border-slate-200 bg-white">
+        <div class="flex gap-2">
+            <input
+                type="text"
+                id="chat-input"
+                placeholder="Skriv din besked..."
+                autocomplete="off"
+                class="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-400 focus:border-transparent outline-none text-sm"
+            >
+            <button
+                type="submit"
+                id="send-btn"
+                class="px-5 py-3 bg-slate-800 text-white rounded-xl font-medium hover:bg-slate-700 transition-colors text-sm disabled:opacity-50"
+            >
+                Send
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

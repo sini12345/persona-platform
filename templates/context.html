@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Kontekst — {{ persona.name }}{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto p-6">
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-sm text-slate-400 mb-2">
+            <span>{{ persona.icon }} {{ persona.name }}</span>
+            <span>·</span>
+            <span>{{ scenario_title }}</span>
+        </div>
+        <h1 class="text-xl font-semibold text-slate-900">Kontekst og baggrund</h1>
+        <p class="text-sm text-slate-500 mt-1">Perspektiver fra forskning og praksis der kan informere din refleksion</p>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="flex border-b border-slate-200 mb-6">
+        <button onclick="showTab('historie')" id="tab-historie" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-slate-800 text-slate-800">
+            Historie
+        </button>
+        <button onclick="showTab('system')" id="tab-system" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
+            Systemet bag
+        </button>
+        <button onclick="showTab('kilder')" id="tab-kilder" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
+            Kilder
+        </button>
+    </div>
+
+    <!-- Tab content -->
+    <div id="content-historie" class="tab-content">
+        <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
+            {{ context_html | safe }}
+        </div>
+    </div>
+    <div id="content-system" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
+            <p class="text-slate-500 italic">Systemkontekst vil blive vist her.</p>
+        </div>
+    </div>
+    <div id="content-kilder" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
+            <p class="text-slate-500 italic">Kildeliste vil blive vist her.</p>
+        </div>
+    </div>
+
+    <div class="mt-8 flex justify-between items-center">
+        <a href="/sessions/{{ session_id }}/chat" class="text-sm text-slate-400 hover:text-slate-600">&larr; Tilbage til samtalen</a>
+        <a href="/personas" class="px-5 py-2.5 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors">
+            Ny samtale
+        </a>
+    </div>
+</div>
+
+<script>
+    function showTab(name) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(el => {
+            el.classList.remove('border-slate-800', 'text-slate-800');
+            el.classList.add('border-transparent', 'text-slate-400');
+        });
+        document.getElementById('content-' + name).classList.remove('hidden');
+        const btn = document.getElementById('tab-' + name);
+        btn.classList.remove('border-transparent', 'text-slate-400');
+        btn.classList.add('border-slate-800', 'text-slate-800');
+    }
+</script>
+{% endblock %}

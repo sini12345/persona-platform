@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ persona.name }} — Vælg scenario{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto p-6">
+    <div class="mb-6">
+        <a href="/personas" class="text-sm text-slate-400 hover:text-slate-600">&larr; Alle personaer</a>
+    </div>
+
+    <div class="flex items-center gap-3 mb-6">
+        <span class="text-3xl">{{ persona.icon }}</span>
+        <div>
+            <h1 class="text-2xl font-semibold text-slate-900">{{ persona.name }}</h1>
+            <p class="text-slate-500 text-sm">{{ persona.age }} år · {{ persona.pronouns }} · {{ persona.role }}</p>
+        </div>
+    </div>
+
+    <h2 class="text-lg font-medium text-slate-800 mb-4">Vælg scenario</h2>
+
+    <div class="space-y-3">
+        {% for scenario in scenarios %}
+        <a href="/personas/{{ persona_id }}/scenarios/{{ scenario.number }}/mission" class="block group">
+            <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-400 hover:shadow-md transition-all">
+                <div class="flex items-start gap-3">
+                    <span class="bg-slate-100 text-slate-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">{{ scenario.number }}</span>
+                    <div>
+                        <h3 class="font-medium text-slate-900 group-hover:text-slate-700">{{ scenario.title }}</h3>
+                        <p class="text-sm text-slate-500 mt-1">{{ scenario.situation[:150] }}{% if scenario.situation|length > 150 %}...{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

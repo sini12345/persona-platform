@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Vælg persona — Persona Træning{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto p-6">
+    <div class="mb-8">
+        <h1 class="text-2xl font-semibold text-slate-900">Vælg persona</h1>
+        <p class="text-slate-500 mt-1">Hvem vil du øve dig med i dag?</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for id, meta in personas.items() %}
+        <a href="/personas/{{ id }}/scenarios" class="block group">
+            <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-400 hover:shadow-md transition-all h-full">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-2xl">{{ meta.icon }}</span>
+                    <div>
+                        <h2 class="font-semibold text-slate-900 group-hover:text-slate-700">{{ meta.name }}</h2>
+                        <span class="text-xs text-slate-400">{{ meta.age }} år · {{ meta.pronouns }}</span>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-600 leading-relaxed">{{ meta.short }}</p>
+                <div class="mt-3 text-xs text-slate-400">
+                    Din rolle: {{ meta.role }}
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="mt-8 text-center">
+        <p class="text-xs text-slate-400">{{ group_name }}</p>
+    </div>
+</div>
+{% endblock %}
