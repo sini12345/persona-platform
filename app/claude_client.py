@@ -13,9 +13,9 @@ from typing import AsyncGenerator
 from app.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, MAX_TOKENS
 
 
-def get_client() -> anthropic.Anthropic:
-    """Create an Anthropic client."""
-    return anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+def get_client() -> anthropic.AsyncAnthropic:
+    """Create an async Anthropic client."""
+    return anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
 
 
 def build_messages(conversation_history: list[dict], prefill: bool = True) -> list[dict]:
@@ -72,59 +72,62 @@ async def stream_response(
     indre_content = ""
     buffer = ""  # Buffer for detecting </indre> tag
 
-    with client.messages.stream(
-        model=CLAUDE_MODEL,
-        max_tokens=MAX_TOKENS,
-        system=system_prompt,
-        messages=messages,
-    ) as stream:
-        for text in stream.text_stream:
-            full_content += text
+    try:
+        async with client.messages.stream(
+            model=CLAUDE_MODEL,
+            max_tokens=MAX_TOKENS,
+            system=system_prompt,
+            messages=messages,
+        ) as stream:
+            async for text in stream.text_stream:
+                full_content += text
 
-            if in_indre:
-                # We're inside <indre> — accumulate and look for closing tag
-                buffer += text
-                close_pos = buffer.find("</indre>")
+                if in_indre:
+                    buffer += text
+                    close_pos = buffer.find("</indre>")
 
-                if close_pos != -1:
-                    # Found the closing tag
-                    indre_text = buffer[:close_pos]
-                    after_close = buffer[close_pos + len("</indre>"):]
-                    indre_content += indre_text
+                    if close_pos != -1:
+                        indre_text = buffer[:close_pos]
+                        after_close = buffer[close_pos + len("</indre>"):]
+                        indre_content += indre_text
 
-                    yield {"type": "indre", "text": indre_content}
+                        yield {"type": "indre", "text": indre_content}
 
-                    # Switch to visible mode
-                    in_indre = False
-                    buffer = ""
-
-                    # Anything after </indre> is visible
-                    if after_close.strip():
-                        visible_content += after_close
-                        yield {"type": "visible", "text": after_close}
-                else:
-                    # Still accumulating inner monologue
-                    # Only yield if buffer is getting long (to show progress)
-                    if len(buffer) > 100:
-                        indre_content += buffer
-                        yield {"type": "indre", "text": buffer}
+                        in_indre = False
                         buffer = ""
-            else:
-                # We're in visible mode — stream directly to student
-                visible_content += text
-                yield {"type": "visible", "text": text}
 
-    # If we never left indre mode (shouldn't happen but safety)
-    if in_indre and buffer:
-        indre_content += buffer
-        yield {"type": "indre", "text": buffer}
+                        if after_close.strip():
+                            visible_content += after_close
+                            yield {"type": "visible", "text": after_close}
+                    else:
+                        if len(buffer) > 100:
+                            indre_content += buffer
+                            yield {"type": "indre", "text": buffer}
+                            buffer = ""
+                else:
+                    visible_content += text
+                    yield {"type": "visible", "text": text}
 
-    # Final event with complete content
-    yield {
-        "type": "done",
-        "full_content": full_content,
-        "visible_content": visible_content.strip(),
-    }
+        # If we never left indre mode (shouldn't happen but safety)
+        if in_indre and buffer:
+            indre_content += buffer
+            yield {"type": "indre", "text": buffer}
+
+        # Final event with complete content
+        yield {
+            "type": "done",
+            "full_content": full_content,
+            "visible_content": visible_content.strip(),
+        }
+
+    except anthropic.AuthenticationError:
+        yield {"type": "error", "text": "Ugyldig API-nøgle. Kontakt administrator."}
+    except anthropic.RateLimitError:
+        yield {"type": "error", "text": "API rate limit nået. Vent venligst og prøv igen."}
+    except anthropic.APIError as e:
+        yield {"type": "error", "text": f"API-fejl: {e.message}"}
+    except Exception as e:
+        yield {"type": "error", "text": f"Uventet fejl: {str(e)}"}
 
 
 def sync_response(system_prompt: str, conversation_history: list[dict]) -> dict:

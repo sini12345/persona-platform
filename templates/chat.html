@@ -78,6 +78,10 @@
                                     // Final: replace with properly formatted content
                                     responseText.innerHTML = formatResponse(data.visible_content);
                                     scrollToBottom();
+                                } else if (data.type === 'error') {
+                                    typingIndicator.classList.add('hidden');
+                                    responseText.innerHTML = '<span class="text-red-300">' + escapeHtml(data.text) + '</span>';
+                                    scrollToBottom();
                                 } else if (data.type === 'end') {
                                     // Persona ended the conversation
                                     if (data.ended_by === 'persona') {
