@@ -153,3 +153,60 @@ async def get_group_stats(group_id: str) -> dict:
         per_persona = {row["persona_id"]: row["count"] for row in await cursor.fetchall()}
 
         return {"total_sessions": total, "per_persona": per_persona}
+
+
+# --- Admin: all groups ---
+
+async def get_all_groups() -> list[dict]:
+    """Get all groups."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute("SELECT * FROM groups ORDER BY created_at DESC")
+        return [dict(row) for row in await cursor.fetchall()]
+
+
+async def create_group(group_id: str, name: str, code: str):
+    """Create a new group."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute(
+            "INSERT INTO groups (id, name, code) VALUES (?, ?, ?)",
+            (group_id, name, code.upper())
+        )
+        await db.commit()
+
+
+# --- Admin: all sessions with details ---
+
+async def get_all_sessions(group_id: str | None = None) -> list[dict]:
+    """Get all sessions, optionally filtered by group. Includes message count."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        if group_id:
+            cursor = await db.execute(
+                """SELECT s.*, g.name as group_name, g.code as group_code,
+                          (SELECT COUNT(*) FROM messages WHERE session_id = s.id) as message_count
+                   FROM sessions s
+                   LEFT JOIN groups g ON s.group_id = g.id
+                   WHERE s.group_id = ?
+                   ORDER BY s.started_at DESC""",
+                (group_id,)
+            )
+        else:
+            cursor = await db.execute(
+                """SELECT s.*, g.name as group_name, g.code as group_code,
+                          (SELECT COUNT(*) FROM messages WHERE session_id = s.id) as message_count
+                   FROM sessions s
+                   LEFT JOIN groups g ON s.group_id = g.id
+                   ORDER BY s.started_at DESC"""
+            )
+        return [dict(row) for row in await cursor.fetchall()]
+
+
+async def get_session_with_messages(session_id: str) -> dict | None:
+    """Get a session with all its messages for admin review."""
+    session = await get_session(session_id)
+    if not session:
+        return None
+    messages = await get_messages(session_id)
+    session["messages"] = messages
+    return session

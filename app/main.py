@@ -13,10 +13,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
-from app.config import PERSONA_META, BASE_DIR
+import re
+from app.config import PERSONA_META, BASE_DIR, ADMIN_PASSWORD
 from app.database import (
     init_db, validate_group_code, create_session, end_session,
     get_session, save_message, get_messages,
+    get_all_groups, create_group, get_all_sessions, get_session_with_messages,
 )
 from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
@@ -344,6 +346,110 @@ async def context_page(request: Request, session_id: str):
         "scenario_title": scenario.get("title", ""),
         "context_html": md_to_html(briefing_data["context"]),
     })
+
+
+# --- Admin ---
+
+def check_admin(request: Request) -> bool:
+    """Check if request has admin access via cookie or query param."""
+    pwd = request.query_params.get("pwd", "")
+    if pwd == ADMIN_PASSWORD:
+        return True
+    return request.cookies.get("is_admin") == "true"
+
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard(request: Request, group: str | None = None):
+    """Admin dashboard with overview of all conversations."""
+    if not check_admin(request):
+        return HTMLResponse(
+            """<div style="font-family:sans-serif;max-width:300px;margin:100px auto;text-align:center">
+            <h2>Admin login</h2>
+            <form method="GET" action="/admin">
+                <input type="password" name="pwd" placeholder="Admin password"
+                    style="padding:10px;width:100%;border:1px solid #ccc;border-radius:8px;margin:10px 0">
+                <button type="submit"
+                    style="padding:10px 20px;background:#1e293b;color:white;border:none;border-radius:8px;cursor:pointer;width:100%">
+                    Log ind</button>
+            </form></div>""",
+            status_code=200,
+        )
+
+    groups = await get_all_groups()
+    sessions = await get_all_sessions(group_id=group)
+
+    # Count sessions per group
+    all_sessions = await get_all_sessions()
+    group_session_counts = {}
+    total_messages = 0
+    for s in all_sessions:
+        gid = s.get("group_id", "")
+        group_session_counts[gid] = group_session_counts.get(gid, 0) + 1
+        total_messages += s.get("message_count", 0)
+
+    response = templates.TemplateResponse("admin.html", {
+        "request": request,
+        "groups": groups,
+        "sessions": sessions,
+        "total_sessions": len(all_sessions),
+        "total_messages": total_messages,
+        "group_session_counts": group_session_counts,
+        "persona_meta": PERSONA_META,
+        "filter_group": group,
+    })
+    # Set admin cookie so they don't need password again
+    response.set_cookie("is_admin", "true", max_age=86400)
+    return response
+
+
+@app.post("/admin/groups")
+async def admin_create_group(request: Request, name: str = Form(...), code: str = Form(...)):
+    """Create a new group code."""
+    if not check_admin(request):
+        return HTMLResponse('<p class="text-red-500">Ikke autoriseret</p>')
+
+    group_id = str(uuid.uuid4())[:8]
+    try:
+        await create_group(group_id, name, code.strip())
+        return HTMLResponse(f'<p class="text-green-600">Holdkode <strong>{code.upper()}</strong> oprettet!</p>')
+    except Exception as e:
+        return HTMLResponse(f'<p class="text-red-500">Fejl: koden findes allerede</p>')
+
+
+@app.get("/admin/sessions/{session_id}", response_class=HTMLResponse)
+async def admin_view_session(request: Request, session_id: str):
+    """View a specific conversation with all messages."""
+    if not check_admin(request):
+        return RedirectResponse(url="/admin", status_code=303)
+
+    session = await get_session(session_id)
+    if not session:
+        return RedirectResponse(url="/admin", status_code=303)
+
+    messages = await get_messages(session_id)
+
+    # Extract indre content for admin display
+    display_messages = []
+    for msg in messages:
+        m = dict(msg)
+        if msg["role"] == "assistant":
+            # Extract indre monologue for display
+            indre_match = re.search(r"<indre>(.*?)</indre>", msg["content"], re.DOTALL)
+            m["indre_content"] = indre_match.group(1).strip() if indre_match else ""
+            m["visible_content"] = msg["visible_content"] or strip_indre_tags(msg["content"])
+        display_messages.append(m)
+
+    persona_name = PERSONA_META.get(session["persona_id"], {}).get("name", session["persona_id"])
+
+    response = templates.TemplateResponse("admin_session.html", {
+        "request": request,
+        "session": session,
+        "messages": display_messages,
+        "persona_meta": PERSONA_META,
+        "persona_name": persona_name,
+    })
+    response.set_cookie("is_admin", "true", max_age=86400)
+    return response
 
 
 # --- Health check ---

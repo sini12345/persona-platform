@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Admin — Persona Træning{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto p-6">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-2xl font-semibold text-slate-900">Admin</h1>
+            <p class="text-slate-500 text-sm">Overblik over samtaler og holdkoder</p>
+        </div>
+        <a href="/personas" class="text-sm text-slate-400 hover:text-slate-600">Til platform &rarr;</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+            <p class="text-2xl font-semibold text-slate-900">{{ total_sessions }}</p>
+            <p class="text-xs text-slate-400">Samtaler i alt</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+            <p class="text-2xl font-semibold text-slate-900">{{ total_messages }}</p>
+            <p class="text-xs text-slate-400">Beskeder i alt</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+            <p class="text-2xl font-semibold text-slate-900">{{ groups | length }}</p>
+            <p class="text-xs text-slate-400">Holdkoder</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+            <p class="text-2xl font-semibold text-slate-900">7</p>
+            <p class="text-xs text-slate-400">Personaer</p>
+        </div>
+    </div>
+
+    <!-- Group codes -->
+    <div class="bg-white rounded-xl border border-slate-200 p-5 mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-slate-900">Holdkoder</h2>
+        </div>
+        <div class="space-y-2">
+            {% for group in groups %}
+            <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+                <div>
+                    <span class="font-mono text-sm bg-slate-100 px-2 py-1 rounded">{{ group.code }}</span>
+                    <span class="text-sm text-slate-600 ml-2">{{ group.name }}</span>
+                </div>
+                <span class="text-xs text-slate-400">{{ group_session_counts.get(group.id, 0) }} samtaler</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Add new group -->
+        <form hx-post="/admin/groups" hx-target="#group-result" hx-swap="innerHTML" class="mt-4 flex gap-2">
+            <input type="text" name="name" placeholder="Holdnavn (fx 'Hold B')" class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm" required>
+            <input type="text" name="code" placeholder="Kode (fx PAED2026B)" class="w-40 px-3 py-2 border border-slate-300 rounded-lg text-sm uppercase" required>
+            <button type="submit" class="px-4 py-2 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700">Opret</button>
+        </form>
+        <div id="group-result" class="mt-2 text-sm"></div>
+    </div>
+
+    <!-- Conversations -->
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+        <h2 class="font-semibold text-slate-900 mb-4">Samtaler</h2>
+
+        <!-- Filter -->
+        <div class="flex gap-2 mb-4">
+            <a href="/admin" class="px-3 py-1.5 text-xs rounded-full {{ 'bg-slate-800 text-white' if not filter_group else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">Alle</a>
+            {% for group in groups %}
+            <a href="/admin?group={{ group.id }}" class="px-3 py-1.5 text-xs rounded-full {{ 'bg-slate-800 text-white' if filter_group == group.id else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">{{ group.code }}</a>
+            {% endfor %}
+        </div>
+
+        {% if sessions %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-xs text-slate-400 border-b border-slate-200">
+                        <th class="pb-2 font-medium">Tidspunkt</th>
+                        <th class="pb-2 font-medium">Hold</th>
+                        <th class="pb-2 font-medium">Persona</th>
+                        <th class="pb-2 font-medium">Scenario</th>
+                        <th class="pb-2 font-medium">Mission</th>
+                        <th class="pb-2 font-medium">Beskeder</th>
+                        <th class="pb-2 font-medium"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in sessions %}
+                    <tr class="border-b border-slate-50 hover:bg-slate-50">
+                        <td class="py-2.5 text-slate-500">{{ s.started_at[:16] if s.started_at else '—' }}</td>
+                        <td class="py-2.5"><span class="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">{{ s.group_code or '—' }}</span></td>
+                        <td class="py-2.5">
+                            {% if s.persona_id in persona_meta %}
+                            {{ persona_meta[s.persona_id].icon }} {{ persona_meta[s.persona_id].name }}
+                            {% else %}
+                            {{ s.persona_id }}
+                            {% endif %}
+                        </td>
+                        <td class="py-2.5 text-slate-500">{{ s.scenario_number }}</td>
+                        <td class="py-2.5 text-slate-500">{{ s.mission or 'Åben' }}</td>
+                        <td class="py-2.5 text-slate-500">{{ s.message_count }}</td>
+                        <td class="py-2.5">
+                            <a href="/admin/sessions/{{ s.id }}" class="text-xs text-slate-400 hover:text-slate-700">Se samtale &rarr;</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-slate-400 py-4 text-center">Ingen samtaler endnu.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

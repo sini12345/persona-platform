@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Samtale {{ session.id }} — Admin{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto p-6">
+    <div class="mb-6">
+        <a href="/admin" class="text-sm text-slate-400 hover:text-slate-600">&larr; Tilbage til overblik</a>
+    </div>
+
+    <!-- Session info -->
+    <div class="bg-white rounded-xl border border-slate-200 p-5 mb-6">
+        <div class="flex items-center gap-3 mb-3">
+            {% if session.persona_id in persona_meta %}
+            <span class="text-2xl">{{ persona_meta[session.persona_id].icon }}</span>
+            <div>
+                <h1 class="text-lg font-semibold text-slate-900">{{ persona_meta[session.persona_id].name }}</h1>
+                <p class="text-sm text-slate-500">Scenario {{ session.scenario_number }} · Mission {{ session.mission or 'Åben dialog' }}</p>
+            </div>
+            {% else %}
+            <h1 class="text-lg font-semibold text-slate-900">{{ session.persona_id }}</h1>
+            {% endif %}
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-500">
+            <div>
+                <span class="text-slate-400">Hold:</span>
+                <span class="font-mono">{{ session.group_id }}</span>
+            </div>
+            <div>
+                <span class="text-slate-400">Startet:</span>
+                {{ session.started_at[:16] if session.started_at else '—' }}
+            </div>
+            <div>
+                <span class="text-slate-400">Afsluttet:</span>
+                {{ session.ended_at[:16] if session.ended_at else 'Aktiv' }}
+            </div>
+            <div>
+                <span class="text-slate-400">Afsluttet af:</span>
+                {{ session.ended_by or '—' }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="space-y-3">
+        {% for msg in messages %}
+        <div class="flex {{ 'justify-end' if msg.role == 'user' else 'justify-start' }}">
+            <div class="max-w-[85%]">
+                <div class="text-xs text-slate-400 mb-1 {{ 'text-right' if msg.role == 'user' else '' }}">
+                    {{ 'Studerende' if msg.role == 'user' else persona_name }}
+                    <span class="ml-1">{{ msg.created_at[11:16] if msg.created_at else '' }}</span>
+                </div>
+                <div class="{{ 'chat-bubble-user' if msg.role == 'user' else 'chat-bubble-persona' }} px-4 py-3">
+                    <p class="text-sm">{{ msg.visible_content or msg.content }}</p>
+                </div>
+                {% if msg.role == 'assistant' and msg.content != msg.visible_content %}
+                <details class="mt-1">
+                    <summary class="text-xs text-slate-300 cursor-pointer hover:text-slate-500">Indre monolog</summary>
+                    <div class="mt-1 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 italic">
+                        {{ msg.indre_content }}
+                    </div>
+                </details>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not messages %}
+        <p class="text-sm text-slate-400 text-center py-8">Ingen beskeder i denne samtale.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
