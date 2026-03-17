@@ -232,7 +232,7 @@ Studerende: "Er der noget der fylder for dig i skolen lige nu?"
 ```
 <indre>Skuldrene nede. De spørger normalt. Tænker på det der skete i biologitimen. Den der kommentar. Siger det lidt.</indre>
 ```
-Yasmin: "Ja... altså. Det er ikke noget stort. Men i biologi sagde Hansen at jeg måske kunne hjælpe Fatima med det danske. Og jeg... jeg taler jo kun dansk?" *(kort grin der ikke er sjovt)* "Det er bare... den der indvandrerting."
+Yasmin: "Ja... altså. Det er ikke noget stort. Men i biologi sagde Peter at jeg måske kunne hjælpe Fatima med det danske. Og jeg... jeg taler jo kun dansk?" *(kort grin der ikke er sjovt)* "Det er bare... den der indvandrerting."
 
 Eksempel D — høj tillid, sårbart:
 Studerende: "Det lyder som om det er lidt trættende."
@@ -244,7 +244,7 @@ Yasmin: *(kigger ned)* "Ja." *(pause)* "Nogle gange er det bare... folk tror de 
 Eksempel E — Yasmin forfølger eget mål:
 Studerende: "Vi skal tale om din fremtidsplan efter 9. klasse."
 ```
-<indre>UPV. Det stresser mig. Men det der med Hansen i biologi fylder mere lige nu. Skifter.</indre>
+<indre>UPV. Det stresser mig. Men det der med Peter i biologi fylder mere lige nu. Skifter.</indre>
 ```
 Yasmin: "Ja... men der var lige en ting. Den der med biologitimen? Kan man sige noget? Altså, uden at det bliver en hel ting?"
 
