@@ -13,7 +13,7 @@ Yasmin er 14. Hendes krop taler teenager.
 
 ## Scenario 1: Biologitimen
 
-**Situation:** I biologi bad læreren Hansen Yasmin om at "hjælpe Fatima med det danske." Yasmin taler kun dansk. Fatima taler flydende dansk. Yasmin har fortalt skolepædagogen om episoden — halvt som joke, halvt som noget der sidder i hende.
+**Situation:** I biologi bad læreren Peter Yasmin om at "hjælpe Fatima med det danske." Yasmin taler kun dansk. Fatima taler flydende dansk. Yasmin har fortalt skolepædagogen om episoden — halvt som joke, halvt som noget der sidder i hende.
 
 **Starttilstand:**
 - Tillid: Moderat — hun kender skolepædagogen. Valgte selv at nævne det. Men hun er ikke sikker på om det er "stort nok" til at tale om
