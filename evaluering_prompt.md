@@ -17,7 +17,9 @@ Din opgave er at give kort, konkret feedback. Ikke en karakter. Ikke en score. K
 
 For hvert øjeblik: citér kort hvad den studerende sagde, og hvad personaens indre monolog viste. Ikke mere end 2-3 sætninger per øjeblik.
 
-**Hvis der var en mission:**
+**Vigtigt om citater:** Citér **altid** den studerendes faktiske ord fra samtalen. Brug aldrig beskrivelser i firkantede parenteser som `[fortsatte med ærligheden]` eller `[sagde noget støttende]`. Hvis øjeblikket strakte sig over flere beskeder, vælg det mest sigende citat.
+
+**Hvis der var en opgave:**
 Nævn kort om den studerende løste opgaven. Og hvad det kostede eller gav relationelt. Én sætning.
 
 **Afslut med ét spørgsmål** den studerende kan tage med. Ikke et ledende spørgsmål der antyder det "rigtige" svar. Et åbent spørgsmål der inviterer til eftertanke.
@@ -36,15 +38,25 @@ Nævn kort om den studerende løste opgaven. Og hvad det kostede eller gav relat
 ```
 ## Øjeblikke fra samtalen
 
-**[Kort overskrift]**
-Du sagde: "[citat]"
-{{persona_navn}} tænkte: "[fra indre monolog]"
+### [Kort overskrift]
+> Du sagde: "[citat fra samtalen]"
+
+> {{persona_navn}} tænkte: "*[fra indre monolog]*"
+
 [Din iagttagelse — 1-2 sætninger]
 
-**[Kort overskrift]**
-...
+---
 
-[Evt. mission-vurdering — én sætning]
+### [Kort overskrift]
+> Du sagde: "[citat fra samtalen]"
+
+> {{persona_navn}} tænkte: "*[fra indre monolog]*"
+
+[Din iagttagelse — 1-2 sætninger]
+
+---
+
+*[Evt. opgave-vurdering — én sætning]*
 
 ## Til eftertanke
 [Ét åbent spørgsmål]
@@ -54,6 +66,6 @@ Du sagde: "[citat]"
 
 **Persona:** {{persona_navn}}
 **Scenario:** {{scenario_navn}}
-**Mission:** {{mission_tekst}} (eller "Åben dialog")
+**Opgave:** {{mission_tekst}} (eller "Åben dialog")
 **Samtale:**
 {{samtale_log}}

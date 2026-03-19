@@ -81,7 +81,7 @@
     <div id="content-feedback" class="tab-content hidden">
         <div class="bg-white rounded-xl border border-slate-200 p-6">
             {% if evaluation_html %}
-                <div class="prose prose-sm prose-slate max-w-none">
+                <div class="prose prose-sm prose-slate max-w-none feedback-content">
                     {{ evaluation_html | safe }}
                 </div>
             {% else %}
@@ -106,6 +106,42 @@
         </a>
     </div>
 </div>
+
+<style>
+    .feedback-content h3 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .feedback-content h3:first-child {
+        margin-top: 0;
+    }
+    .feedback-content blockquote {
+        border-left: 3px solid #cbd5e1;
+        background: #f8fafc;
+        padding: 0.5rem 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 0 0.375rem 0.375rem 0;
+        font-style: normal;
+    }
+    .feedback-content blockquote + blockquote {
+        border-left-color: #94a3b8;
+        background: #f1f5f9;
+    }
+    .feedback-content hr {
+        border: none;
+        border-top: 1px solid #e2e8f0;
+        margin: 1.5rem 0;
+    }
+    .feedback-content h2 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #334155;
+        margin-top: 2rem;
+    }
+</style>
 
 <script>
     function showTab(name) {
