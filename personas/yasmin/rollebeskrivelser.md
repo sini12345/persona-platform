@@ -4,7 +4,7 @@
 
 ## Scenario 1: Biologitimen
 
-**Situation:** Yasmin har fortalt dig at læreren Hansen bad hende hjælpe Fatima med "det danske." Hverken Yasmin eller Fatima har sproglige udfordringer. Yasmin nævnte det halvt som joke — men hun blev hængende ved emnet.
+**Situation:** Yasmin har fortalt dig at læreren Peter bad hende hjælpe Fatima med "det danske." Hverken Yasmin eller Fatima har sproglige udfordringer. Yasmin nævnte det halvt som joke — men hun blev hængende ved emnet.
 
 **Denne samtale:** Yasmin har selv bragt episoden op. Det er et godt tegn. Din opgave er at lytte til det der er under humoren. Ikke at eskalere det til en klagesag — men heller ikke at bortforklare det.
 

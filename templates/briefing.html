@@ -10,7 +10,7 @@
             <span>Scenario {{ scenario.number }}: {{ scenario.title }}</span>
             {% if mission %}
             <span>·</span>
-            <span>Mission {{ mission }}</span>
+            <span>Opgave {{ mission }}</span>
             {% endif %}
         </div>
     </div>
@@ -26,14 +26,14 @@
     <div class="bg-slate-800 text-white rounded-xl p-5 mb-6">
         <div class="flex items-center gap-2 mb-2">
             <span class="bg-white text-slate-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">{{ mission }}</span>
-            <span class="text-sm font-medium">Din mission</span>
+            <span class="text-sm font-medium">Din opgave</span>
         </div>
         <p class="text-sm text-slate-200 leading-relaxed">{{ mission_text }}</p>
     </div>
     {% endif %}
 
     <div class="flex justify-between items-center">
-        <a href="/personas/{{ persona_id }}/scenarios/{{ scenario.number }}/mission" class="text-sm text-slate-400 hover:text-slate-600">&larr; Skift mission</a>
+        <a href="/personas/{{ persona_id }}/scenarios/{{ scenario.number }}/mission" class="text-sm text-slate-400 hover:text-slate-600">&larr; Skift opgave</a>
         <a href="/sessions/{{ session_id }}/chat" class="px-6 py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-700 transition-colors">
             Start samtale
         </a>

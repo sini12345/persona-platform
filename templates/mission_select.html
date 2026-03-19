@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ persona.name }} — Vælg mission{% endblock %}
+{% block title %}{{ persona.name }} — Vælg opgave{% endblock %}
 
 {% block body %}
 <div class="max-w-2xl mx-auto p-6">
@@ -12,8 +12,8 @@
         <p class="text-sm text-slate-500 mt-1">{{ scenario.situation }}</p>
     </div>
 
-    <h2 class="text-lg font-medium text-slate-800 mb-4">Vælg din mission</h2>
-    <p class="text-sm text-slate-500 mb-4">Missionen giver dig et konkret fokus. Du kan også vælge åben dialog uden mission.</p>
+    <h2 class="text-lg font-medium text-slate-800 mb-4">Vælg din opgave</h2>
+    <p class="text-sm text-slate-500 mb-4">Opgaven giver dig et konkret fokus. Du kan også vælge åben dialog uden opgave.</p>
 
     <div class="space-y-3">
         {% for mission in missions %}
@@ -39,7 +39,7 @@
                     <span class="bg-slate-200 text-slate-600 rounded-full w-8 h-8 flex items-center justify-center text-sm flex-shrink-0">~</span>
                     <div class="pt-1">
                         <p class="text-sm font-medium text-slate-600">Åben dialog</p>
-                        <p class="text-xs text-slate-400 mt-0.5">Ingen specifik mission. Du navigerer frit.</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Ingen specifik opgave. Du navigerer frit.</p>
                     </div>
                 </div>
             </button>

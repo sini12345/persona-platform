@@ -45,6 +45,13 @@ async def init_db():
         """)
         await db.commit()
 
+        # Add evaluation column if it doesn't exist (safe migration)
+        try:
+            await db.execute("ALTER TABLE sessions ADD COLUMN evaluation TEXT")
+            await db.commit()
+        except Exception:
+            pass  # Column already exists
+
 
 def get_db_path():
     return DATABASE_PATH
@@ -155,14 +162,14 @@ async def get_group_stats(group_id: str) -> dict:
         return {"total_sessions": total, "per_persona": per_persona}
 
 
-# --- Admin: all groups ---
-
-async def get_all_groups() -> list[dict]:
-    """Get all groups."""
+async def save_evaluation(session_id: str, evaluation: str):
+    """Save evaluation text for a session."""
     async with aiosqlite.connect(DATABASE_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        cursor = await db.execute("SELECT * FROM groups ORDER BY created_at DESC")
-        return [dict(row) for row in await cursor.fetchall()]
+        await db.execute(
+            "UPDATE sessions SET evaluation = ? WHERE id = ?",
+            (evaluation, session_id)
+        )
+        await db.commit()
 
 
 async def create_group(group_id: str, name: str, code: str):
@@ -175,30 +182,55 @@ async def create_group(group_id: str, name: str, code: str):
         await db.commit()
 
 
-# --- Admin: all sessions with details ---
+async def get_all_groups() -> list[dict]:
+    """Get all groups with session counts."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute("""
+            SELECT g.*, COUNT(s.id) as session_count
+            FROM groups g
+            LEFT JOIN sessions s ON s.group_id = g.id
+            GROUP BY g.id
+            ORDER BY g.name
+        """)
+        return [dict(row) for row in await cursor.fetchall()]
+
+
+async def get_sessions_for_group(group_id: str) -> list[dict]:
+    """Get all sessions for a group, newest first."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute("""
+            SELECT s.*,
+                   (SELECT COUNT(*) FROM messages m WHERE m.session_id = s.id) as message_count
+            FROM sessions s
+            WHERE s.group_id = ?
+            ORDER BY s.started_at DESC
+        """, (group_id,))
+        return [dict(row) for row in await cursor.fetchall()]
+
 
 async def get_all_sessions(group_id: str | None = None) -> list[dict]:
-    """Get all sessions, optionally filtered by group. Includes message count."""
+    """Get all sessions with group info, newest first. Optionally filter by group."""
     async with aiosqlite.connect(DATABASE_PATH) as db:
         db.row_factory = aiosqlite.Row
         if group_id:
-            cursor = await db.execute(
-                """SELECT s.*, g.name as group_name, g.code as group_code,
-                          (SELECT COUNT(*) FROM messages WHERE session_id = s.id) as message_count
-                   FROM sessions s
-                   LEFT JOIN groups g ON s.group_id = g.id
-                   WHERE s.group_id = ?
-                   ORDER BY s.started_at DESC""",
-                (group_id,)
-            )
+            cursor = await db.execute("""
+                SELECT s.*, g.name as group_name, g.code as group_code,
+                       (SELECT COUNT(*) FROM messages m WHERE m.session_id = s.id) as message_count
+                FROM sessions s
+                LEFT JOIN groups g ON g.id = s.group_id
+                WHERE s.group_id = ?
+                ORDER BY s.started_at DESC
+            """, (group_id,))
         else:
-            cursor = await db.execute(
-                """SELECT s.*, g.name as group_name, g.code as group_code,
-                          (SELECT COUNT(*) FROM messages WHERE session_id = s.id) as message_count
-                   FROM sessions s
-                   LEFT JOIN groups g ON s.group_id = g.id
-                   ORDER BY s.started_at DESC"""
-            )
+            cursor = await db.execute("""
+                SELECT s.*, g.name as group_name, g.code as group_code,
+                       (SELECT COUNT(*) FROM messages m WHERE m.session_id = s.id) as message_count
+                FROM sessions s
+                LEFT JOIN groups g ON g.id = s.group_id
+                ORDER BY s.started_at DESC
+            """)
         return [dict(row) for row in await cursor.fetchall()]
 
 

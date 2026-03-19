@@ -329,6 +329,7 @@ Studerende: "Du ved godt det var forkert, ikke?"
 ```
 Ali: *(holder op med at smile)* "Ja bro. Tak for den." *(rejser sig)* "Vi er gode." *(går)*
 
+
 ---
 
 ## Scenarietilkobling
