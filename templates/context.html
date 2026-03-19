@@ -24,6 +24,9 @@
         <button onclick="showTab('kilder')" id="tab-kilder" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
             Kilder
         </button>
+        <button onclick="showTab('samtale')" id="tab-samtale" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
+            Samtale
+        </button>
         <button onclick="showTab('feedback')" id="tab-feedback" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
             Feedback
         </button>
@@ -43,6 +46,36 @@
     <div id="content-kilder" class="tab-content hidden">
         <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
             <p class="text-slate-500 italic">Kildeliste vil blive vist her.</p>
+        </div>
+    </div>
+    <div id="content-samtale" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-slate-200 p-6">
+            <p class="text-sm text-slate-500 mb-4">Din samtale med {{ persona.name }} — inklusiv personaens indre tanker, som du ikke kunne se under samtalen.</p>
+            <div class="space-y-4">
+                {% for msg in messages %}
+                    {% if msg.role == "user" %}
+                        <div class="flex justify-end">
+                            <div class="chat-bubble-user px-4 py-3 max-w-[85%]">
+                                <p class="text-sm text-slate-700">{{ msg.content }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex justify-start">
+                            <div class="max-w-[85%] space-y-2">
+                                {% if msg.indre_content %}
+                                    <div class="bg-slate-100 border-l-2 border-slate-300 rounded-lg px-4 py-3">
+                                        <p class="text-xs font-medium text-slate-400 mb-1">{{ persona.name }}s indre tanker</p>
+                                        <p class="text-sm text-slate-500 italic">{{ msg.indre_content }}</p>
+                                    </div>
+                                {% endif %}
+                                <div class="chat-bubble-persona px-4 py-3">
+                                    <p class="text-sm">{{ msg.visible_content }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
     <div id="content-feedback" class="tab-content hidden">

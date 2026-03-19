@@ -4,6 +4,7 @@ Main FastAPI application with all routes.
 Flow: Login → Persona Select → Scenario Select → Mission Select → Briefing → Chat → Context
 """
 import json
+import re
 import uuid
 import markdown
 from contextlib import asynccontextmanager
@@ -344,6 +345,18 @@ async def context_page(request: Request, session_id: str):
     if session.get("evaluation"):
         evaluation_html = md_to_html(session["evaluation"])
 
+    # Build message list with parsed indre content for Samtale tab
+    db_messages = await get_messages(session_id)
+    display_messages = []
+    for msg in db_messages:
+        entry = {"role": msg["role"], "content": msg["content"]}
+        if msg["role"] == "assistant":
+            # Extract indre content
+            indre_match = re.search(r"<indre>(.*?)</indre>", msg["content"], re.DOTALL)
+            entry["indre_content"] = indre_match.group(1).strip() if indre_match else ""
+            entry["visible_content"] = msg["visible_content"] or strip_indre_tags(msg["content"])
+        display_messages.append(entry)
+
     return templates.TemplateResponse("context.html", {
         "request": request,
         "persona": PERSONA_META[persona_id],
@@ -352,6 +365,7 @@ async def context_page(request: Request, session_id: str):
         "scenario_title": scenario.get("title", ""),
         "context_html": md_to_html(briefing_data["context"]),
         "evaluation_html": evaluation_html,
+        "messages": display_messages,
     })
 
 
