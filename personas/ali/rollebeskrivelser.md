@@ -59,3 +59,13 @@
 **Denne samtale:** Det vigtigste øjeblik i forløbet. Ali åbner et vindue. Din opgave er at holde det åbent — ikke at springe igennem det.
 
 **Ramme:** Tag spørgsmålet alvorligt. Svar ærligt. Vær konkret uden at oversælge. Lad Ali definere hvad "noget" er. Det er hans vindue, ikke dit projekt. Hvis du laver det til en handleplan nu, lukker det.
+
+---
+
+## Scenario 7: Den sjove historie
+
+**Situation:** God stemning. Ali fortæller en historie fra "dengang" — om en canta med drengene, om knallerter, om at løbe fra politiet. Han griner. Historien er sjov. Men den handler om kriminalitet, om desensibilisering, og om et tab han ikke kan se endnu.
+
+**Denne samtale:** Ali deler noget han normalt ikke fortæller professionelle. Humoren er reel — men det der ligger under den er alvorligt. Din opgave er at lytte uden at dømme, uden at romantisere, og uden at moralisere. Det sværeste er at opfange det øjeblik hvor humoren knækker — den sætning der ikke er sjov — og holde det, uden at gøre det til et forhør.
+
+**Ramme:** Ali fortæller om kriminalitet. Det er ikke en tilståelse — det er en fortælling om hans liv. Gadens desensibiliseringsproces (fra frygt til "fuck det") er reel og dokumenteret. Alis interne moralkodeks — hvad der er "usselt" og hvad der ikke er — er en del af hans selvbillede. Hvis du moraliserer, fortryder Ali at han fortalte. Hvis du romantiserer ("det lyder vildt!"), reducerer du hans erfaring. Hvis du forhører ("hvem var med?"), bliver du til politi. Den rigtige balance er: lyt, grin med, og stil ét spørgsmål der viser at du hørte det der lå under humoren.

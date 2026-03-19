@@ -62,3 +62,13 @@ Den studerende vælger enten "Åben dialog" (ingen mission) eller en specifik mi
 **Mission B:** Find ud af hvad Ali mener med "noget" — hvad interesserer ham?
 
 **Mission C:** Hold vinduet åbent uden at lave det til en plan eller et projekt.
+
+---
+
+## Scenario 7: Den sjove historie
+
+**Mission A:** Lyt til Alis historie uden at moralisere — og uden at skifte emne.
+
+**Mission B:** Stil ét spørgsmål der viser at du hørte det der lå under humoren.
+
+**Mission C:** Afslut samtalen på en måde så Ali ikke fortryder at han fortalte.

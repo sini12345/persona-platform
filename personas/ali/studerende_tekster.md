@@ -56,6 +56,14 @@ Gadens kultur har centrale komponenter: vægt på fællesskab og det kollektive,
 
 Forskningen understreger at professionelle der arbejder med unge som Ali skal optjene legitimitet — ikke antage den. Tillid bygges ved konsistens, ægthed og konkret handling, ikke ved titler eller intentioner.
 
+### Desensibilisering og gadens moralkodeks
+
+Kalkan dokumenterer i kapitel 12 ("At rulle folk") den psykologiske proces unge gennemgår i gadens økonomi. Første gang er præget af frygt — hjertebanken, sveddige hænder, en krop der siger stop. Men det går, og pengene er der, og drengene anerkender dig. Næste gang er lettere. Over tid bliver frygten til: "Bliver jeg taget, bliver jeg taget, fuck det." Det er ikke kynisme — det er en tilpasning. En desensibiliseringsproces der starter allerede i 10-12-årsalderen.
+
+Gadens økonomi er ikke amoralsk — den har andre regler. De unge skelner skarpt mellem hvad der er "usselt" og hvad der ikke er. Der er ting de ikke ville gøre: ting der rammer folk der ligner deres mor, ting der er for voldelige, ting der bryder loyaliteten. Disse grænser er reelle og en del af selvbilledet. Det er vigtigt for professionelle at forstå dette moralkodeks — ikke for at acceptere kriminalitet, men for at møde den unge i hans egen forståelse af sig selv.
+
+Gadens interne sprog — "lave en canta" (tasketyveri), "fiske" (snuppe en taske fra cyklist) — bruges kun internt. Hvis en ung bruger dette sprog foran en professionel, er det enten et tegn på meget høj tillid eller lav impulskontrol. Begge dele er vigtige at registrere.
+
 ### Hvis du vil læse mere
 
 - Kalkan (2021): *Shababs — gadekultur, gadens økonomi og respekt på Nørrebro* — ph.d.-afhandling, den fulde dokumentation

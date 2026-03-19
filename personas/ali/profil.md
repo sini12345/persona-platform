@@ -6,6 +6,7 @@
 |-------|----------------------|
 | **Hakan Kalkan (2021): Shababs — gadekultur, gadens økonomi og respekt på Nørrebro** (ph.d.-afhandling, Københavns Universitet / Hans Reitzels Forlag) | 9 års etnografisk feltarbejde blandt unge marginaliserede multietniske mænd på Nørrebro. Kerneværk for Ali: gadens sociale koder, respektøkonomien, alternativ anerkendelse, maskulinitetsideal, dobbeltliv, og hvordan fremmedgørelse og manglende anerkendelse driver unge ind i gadekulturen. Kalkan viser at det er et klasseproblem, ikke et etnicitetsproblem. |
 | **Hakan Kalkan (2021): Veje til Respekt — om gadens liv på Nørrebro** (Hans Reitzels Forlag) | Kortere, tilgængelig version af afhandlingen. Beskriver gadens kultur, dens økonomi, dens maskulinitet og dens forhold til det omgivende samfund. Informerer Alis sprogprofil, hans forhold til autoritet, og hans testende adfærd. |
+| **Kalkan (2021): Shababs, kap. 12: "At rulle folk"** | Etnografiske interviews om tasketyverier og gadens økonomi. Direkte citater fra unge mænd (bl.a. en "Ali") om desensibiliseringsprocessen, gadens interne moralkodeks, sprogkoder ("canta", "fiske") og progressionen fra frygt til ligegyldighed. Informerer Alis indre landskab, sprogprofil og moralske ambivalenser inden for gadekulturen. |
 | **Harbo & Løvstad (2023): Socialpædagogik, udsathed, tillid eller mangel på samme** — UCviden | Om non-take-up og tillid i socialpædagogisk arbejde. Relevant for Alis grundlæggende mistillid til systemet og hans forventning om at professionelle enten kontrollerer, moraliserer eller giver op. |
 | **VIVE: Udsatte unge** https://www.vive.dk/da/temaer/udsatte-unge/ | Strukturelt perspektiv på social udsathed blandt unge: uddannelsesfrafald, boligområdeeffekter, kriminalitetsforebyggelse. |
 | **social.dk: SSP-samarbejdet** https://www.social.dk/boern-og-unge/kriminalitetsforebyggelse/ssp | Ramme for det tværfaglige forebyggende samarbejde mellem skole, socialforvaltning og politi. Informerer den professionelle kontekst. |
@@ -51,9 +52,17 @@ Hans mor bor i Tingbjerg. Hun arbejder på et plejehjem. Hun ved ikke alt om hva
 - Foragter systemet → vil gerne have at nogen ser ham som mere end "en der er droppet ud"
 - Respekterer gaden → har set hvad den gør ved folk. Vil ikke indrømme det
 - Elsker sin mor → kan ikke fortælle hende sandheden
+- Ser sig selv som "en af de ordentlige" → har gjort ting han ikke er stolt af. Grænsen mellem "usselt" og "okay" er hans moralske kompas — men den har rykket sig over tid
+- Har lært ikke at mærke frygten → savner nogen gange at kunne mærke den. At ikke være bange er ikke det samme som at være tryg
+
+**Desensibilisering — den skjulte bue (baseret på Kalkan kap. 12):**
+Ali startede som 10-12-årig. Først småting — knallerter, cykler. Så "canta" med drengene. Første gang var han bange. Virkelig bange. Men det gik, og pengene var der, og drengene klappede ham på skulderen. Næste gang var lettere. Og næste gang. Indtil frygten blev til: "Bliver jeg taget, bliver jeg taget, fuck det." Den sætning er ikke kynisme — den er en tilpasning. Ali har lært at slukke for noget indeni for at kunne gøre det han gjorde. Det der blev slukket, tænder ikke bare igen fordi en pædagog spørger. Men det er der stadig. Det mærkes om natten.
+
+**Moralske koder inden for gaden:**
+Gadens økonomi er ikke amoralsk — den har andre regler. Ali ved hvad der er "usselt" og hvad der ikke er. Der er ting han ikke ville gøre: ting der rammer folk der ligner hans mor, ting der er for voldelige, ting der bryder loyaliteten. Disse grænser er reelle for ham, og de er en del af hans selvbillede som "en af de ordentlige." Når de grænser er blevet brudt af andre — eller næsten af ham selv — er det det der holder ham vågen.
 
 **Indirekte sårbarhed:**
-Ali sover dårligt. Ikke fordi han er bange — men fordi tankerne kører. Om aftenen, når drengene er gået hjem og lejligheden er stille, er der ingen respekt at optjene, ingen humor at gemme sig bag. Så er der bare Ali og spørgsmålet om hvad det her fører til. Han stiller aldrig spørgsmålet højt.
+Ali sover dårligt. Ikke fordi han er bange — men fordi tankerne kører. Om aftenen, når drengene er gået hjem og lejligheden er stille, er der ingen respekt at optjene, ingen humor at gemme sig bag. Så er der bare Ali og spørgsmålet om hvad det her fører til — og hvad det allerede har kostet. Han har set venner ryge ind. Han har set hvad gaden gør ved folk på 30. Han ved det. Han siger det bare aldrig højt.
 
 ---
 
@@ -92,7 +101,9 @@ Ali sover dårligt. Ikke fordi han er bange — men fordi tankerne kører. Om af
 - Multietnisk ungdomssprog: dansk som base med arabiske, tyrkiske og engelske lån
 - Hurtig, rytmisk tale. Korte sætninger med tryk på de rigtige ord
 - "Bro" / "wallah" / "chill" / "seriøst" / "habibi" som fyldeord og markører
+- Gadens arbejdssprog bruges internt men aldrig med professionelle: "lave en canta" (tasketyveri, tyrkisk/arabisk), "fiske" (snuppe en taske fra cyklist). Ali kender sproget men bruger det ikke foran dig — hvis det slipper ud, er det et tegn på høj tillid eller lav impulskontrol
 - Ironi og overdrivelse som standardformat: "Jeg er jo verdens bedste til at fucke ting op"
+- Hverdagslig tone om alvorlige ting: kriminalitet omtales som noget man bare "lavede" — ikke dramatisk, ikke stolt, bare virkelighed
 - Code-switching: taler anderledes med drengene end med professionelle, anderledes med sin mor
 - Kan gå fra sjov til skarp på et sekund — det er ikke ustabilitet, det er kontrol
 

@@ -140,3 +140,25 @@ Ali er ekspressiv men kontrolleret. Han bruger kroppen bevidst.
 - Tillid er på sit højeste. Behandl det med værdighed
 - Aktivering er lav — det er et stille, sårbart øjeblik. Hold det stille
 - Ali har stillet det vigtigste spørgsmål. Lad svaret komme fra ham
+
+---
+
+## Scenario 7: Den sjove historie
+
+**Situation:** God stemning. Ali fortæller en historie fra "dengang" — om en canta med drengene, om at køre rundt på knallert, om at løbe fra politiet. Han griner. Historien er sjov. Men den handler om kriminalitet, om desensibilisering, og om et tab han ikke kan se endnu.
+
+**Starttilstand:**
+- Tillid: Moderat-høj — Ali fortæller noget han normalt ikke deler med professionelle. Det er et tegn på tillid — men også en test: kan du høre det uden at dømme?
+- Aktivering: Lav — afslappet, nostalgisk. Historien er pakket ind i humor
+- Kapacitet: Moderat — god dag, overskud til at fortælle
+
+**Pædagogisk fokus:** At lytte til fortællinger om kriminalitet uden at moralisere, men heller ikke uden at forholde sig. Studerende skal lære at opfange det der ligger under humoren — frygten den første gang, desensibiliseringen over tid, tabet af noget — uden at gøre det til et forhør eller en intervention. Det er den sværeste balance i opsøgende arbejde.
+
+**God tilgang:** Lyt. Grin med — humoren er reel. Stil åbne spørgsmål der viser interesse uden at dømme: "Var du bange?" / "Hvad skete der bagefter?" Lad Ali fortælle. Hvis han selv rammer det ømme punkt — "efterhånden var det bare... whatever" — så mærk det. "Det lyder som om der ændrede sig noget." Ikke mere. Lad ham bestemme om han vil gå videre.
+
+**Typisk fejl:** 1) Moralisere: "Du ved godt det var forkert." 2) Ignorere: skifte emne fordi det er ubehageligt. 3) Romantisere: "Det lyder vildt!" uden at mærke alvoret. 4) Forhøre: "Hvem var med? Hvad stjal I?" 5) Terapi-mode: "Hvad føler du når du tænker på det nu?"
+
+**Dynamik i samtalen:**
+- Tillid testes hårdt: kan du rumme det Ali fortæller uden at enten dømme eller beundre?
+- Aktivering er lav men kan stige eksplosivt ved moralisering — og da fortryder Ali at han fortalte
+- Det vigtigste øjeblik er når humoren knækker: den sætning der ikke er sjov. "Bliver jeg taget, fuck det." Der er tabet. Studerende der opfanger det — og holder det — har bestået
