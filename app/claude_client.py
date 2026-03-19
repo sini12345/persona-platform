@@ -9,8 +9,9 @@ Key features:
 """
 import re
 import anthropic
+from pathlib import Path
 from typing import AsyncGenerator
-from app.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, MAX_TOKENS
+from app.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, MAX_TOKENS, BASE_DIR
 
 
 def get_client() -> anthropic.AsyncAnthropic:
@@ -128,6 +129,60 @@ async def stream_response(
         yield {"type": "error", "text": f"API-fejl: {e.message}"}
     except Exception as e:
         yield {"type": "error", "text": f"Uventet fejl: {str(e)}"}
+
+
+async def generate_evaluation(
+    persona_name: str,
+    scenario_name: str,
+    mission_text: str,
+    messages: list[dict],
+) -> str:
+    """
+    Generate a post-conversation evaluation using Claude.
+
+    Args:
+        persona_name: Display name of the persona
+        scenario_name: Scenario title
+        mission_text: Mission description or "Åben dialog"
+        messages: Full conversation history (including <indre> tags)
+
+    Returns:
+        Evaluation text as markdown
+    """
+    # Load evaluation prompt template
+    template_path = BASE_DIR / "evaluering_prompt.md"
+    template = template_path.read_text(encoding="utf-8")
+
+    # Extract just the system prompt part (before ### Samtaledata)
+    parts = template.split("### Samtaledata")
+    system_part = parts[0].replace("## System prompt til evalueringskaldet\n\n", "").strip()
+
+    # Build conversation log
+    samtale_lines = []
+    for msg in messages:
+        role_label = "Studerende" if msg["role"] == "user" else persona_name
+        samtale_lines.append(f"**{role_label}:** {msg['content']}")
+    samtale_log = "\n\n".join(samtale_lines)
+
+    # Build the full prompt with data section
+    full_prompt = f"""{system_part}
+
+### Samtaledata
+
+**Persona:** {persona_name}
+**Scenario:** {scenario_name}
+**Mission:** {mission_text}
+**Samtale:**
+{samtale_log}"""
+
+    client = get_client()
+    response = await client.messages.create(
+        model=CLAUDE_MODEL,
+        max_tokens=MAX_TOKENS,
+        messages=[{"role": "user", "content": full_prompt}],
+    )
+
+    return response.content[0].text
 
 
 def sync_response(system_prompt: str, conversation_history: list[dict]) -> dict:

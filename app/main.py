@@ -4,6 +4,7 @@ Main FastAPI application with all routes.
 Flow: Login → Persona Select → Scenario Select → Mission Select → Briefing → Chat → Context
 """
 import json
+import re
 import uuid
 import markdown
 from contextlib import asynccontextmanager
@@ -16,12 +17,12 @@ from pydantic import BaseModel
 from app.config import PERSONA_META, BASE_DIR
 from app.database import (
     init_db, validate_group_code, create_session, end_session,
-    get_session, save_message, get_messages,
+    get_session, save_message, get_messages, save_evaluation,
 )
 from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
 )
-from app.claude_client import stream_response, strip_indre_tags
+from app.claude_client import stream_response, strip_indre_tags, generate_evaluation
 from app.auth import get_group_id, get_group_name
 
 
@@ -339,6 +340,23 @@ async def context_page(request: Request, session_id: str):
     scenarios = parse_scenarios(persona_id)
     scenario = scenarios.get(scenario_number, {})
 
+    # Check if evaluation already exists
+    evaluation_html = ""
+    if session.get("evaluation"):
+        evaluation_html = md_to_html(session["evaluation"])
+
+    # Build message list with parsed indre content for Samtale tab
+    db_messages = await get_messages(session_id)
+    display_messages = []
+    for msg in db_messages:
+        entry = {"role": msg["role"], "content": msg["content"]}
+        if msg["role"] == "assistant":
+            # Extract indre content
+            indre_match = re.search(r"<indre>(.*?)</indre>", msg["content"], re.DOTALL)
+            entry["indre_content"] = indre_match.group(1).strip() if indre_match else ""
+            entry["visible_content"] = msg["visible_content"] or strip_indre_tags(msg["content"])
+        display_messages.append(entry)
+
     return templates.TemplateResponse("context.html", {
         "request": request,
         "persona": PERSONA_META[persona_id],
@@ -346,7 +364,69 @@ async def context_page(request: Request, session_id: str):
         "session_id": session_id,
         "scenario_title": scenario.get("title", ""),
         "context_html": md_to_html(briefing_data["context"]),
+        "evaluation_html": evaluation_html,
+        "messages": display_messages,
     })
+
+
+# --- Evaluation ---
+
+@app.post("/sessions/{session_id}/evaluate", response_class=HTMLResponse)
+async def evaluate_session(request: Request, session_id: str):
+    """Generate evaluation for a session. Returns HTML fragment."""
+    session = await get_session(session_id)
+    if not session:
+        return HTMLResponse('<p class="text-red-500">Session ikke fundet.</p>', status_code=404)
+
+    # Return existing evaluation if already generated
+    if session.get("evaluation"):
+        return HTMLResponse(
+            f'<div class="prose prose-sm prose-slate max-w-none">{md_to_html(session["evaluation"])}</div>'
+        )
+
+    persona_id = session["persona_id"]
+    scenario_number = session["scenario_number"]
+    mission = session["mission"]
+
+    # Get persona name and scenario title
+    persona_name = PERSONA_META.get(persona_id, {}).get("name", persona_id)
+    scenarios = parse_scenarios(persona_id)
+    scenario_name = scenarios.get(scenario_number, {}).get("title", f"Scenario {scenario_number}")
+
+    # Get mission text
+    mission_text = "Åben dialog"
+    if mission:
+        missions = get_missions(persona_id, scenario_number)
+        for m in missions:
+            if m["id"] == mission:
+                mission_text = f"Mission {m['id']}: {m['text']}"
+                break
+
+    # Get full conversation (including <indre> tags)
+    messages = await get_messages(session_id)
+    conversation = [{"role": msg["role"], "content": msg["content"]} for msg in messages]
+
+    if not conversation:
+        return HTMLResponse(
+            '<p class="text-slate-500 italic">Ingen beskeder i samtalen at evaluere.</p>'
+        )
+
+    try:
+        evaluation = await generate_evaluation(
+            persona_name=persona_name,
+            scenario_name=scenario_name,
+            mission_text=mission_text,
+            messages=conversation,
+        )
+        await save_evaluation(session_id, evaluation)
+        return HTMLResponse(
+            f'<div class="prose prose-sm prose-slate max-w-none">{md_to_html(evaluation)}</div>'
+        )
+    except Exception as e:
+        return HTMLResponse(
+            f'<p class="text-red-500">Kunne ikke generere feedback: {str(e)}</p>',
+            status_code=500,
+        )
 
 
 # --- Health check ---
