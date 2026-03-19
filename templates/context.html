@@ -24,6 +24,9 @@
         <button onclick="showTab('kilder')" id="tab-kilder" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
             Kilder
         </button>
+        <button onclick="showTab('feedback')" id="tab-feedback" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
+            Feedback
+        </button>
     </div>
 
     <!-- Tab content -->
@@ -40,6 +43,26 @@
     <div id="content-kilder" class="tab-content hidden">
         <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
             <p class="text-slate-500 italic">Kildeliste vil blive vist her.</p>
+        </div>
+    </div>
+    <div id="content-feedback" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-slate-200 p-6">
+            {% if evaluation_html %}
+                <div class="prose prose-sm prose-slate max-w-none">
+                    {{ evaluation_html | safe }}
+                </div>
+            {% else %}
+                <div id="feedback-container">
+                    <p class="text-slate-600 mb-4">Få personlig feedback på din samtale baseret på konkrete øjeblikke fra dialogen.</p>
+                    <button
+                        onclick="requestFeedback()"
+                        id="feedback-btn"
+                        class="px-5 py-2.5 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors"
+                    >
+                        Få feedback på din samtale
+                    </button>
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -62,6 +85,25 @@
         const btn = document.getElementById('tab-' + name);
         btn.classList.remove('border-transparent', 'text-slate-400');
         btn.classList.add('border-slate-800', 'text-slate-800');
+    }
+
+    async function requestFeedback() {
+        const btn = document.getElementById('feedback-btn');
+        const container = document.getElementById('feedback-container');
+
+        // Show spinner
+        btn.disabled = true;
+        btn.innerHTML = '<span class="inline-flex items-center gap-2"><svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Genererer feedback...</span>';
+
+        try {
+            const res = await fetch('/sessions/{{ session_id }}/evaluate', {
+                method: 'POST',
+            });
+            const html = await res.text();
+            container.innerHTML = html;
+        } catch (err) {
+            container.innerHTML = '<p class="text-red-500">Noget gik galt. Prøv igen.</p>';
+        }
     }
 </script>
 {% endblock %}
