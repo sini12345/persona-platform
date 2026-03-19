@@ -14,7 +14,7 @@
             <span class="text-2xl">{{ persona_meta[session.persona_id].icon }}</span>
             <div>
                 <h1 class="text-lg font-semibold text-slate-900">{{ persona_meta[session.persona_id].name }}</h1>
-                <p class="text-sm text-slate-500">Scenario {{ session.scenario_number }} · Mission {{ session.mission or 'Åben dialog' }}</p>
+                <p class="text-sm text-slate-500">Scenario {{ session.scenario_number }} · Opgave {{ session.mission or 'Åben dialog' }}</p>
             </div>
             {% else %}
             <h1 class="text-lg font-semibold text-slate-900">{{ session.persona_id }}</h1>
