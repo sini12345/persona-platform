@@ -52,6 +52,19 @@ async def init_db():
         except Exception:
             pass  # Column already exists
 
+        # Add feedback table if it doesn't exist
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL REFERENCES sessions(id),
+                content TEXT NOT NULL,
+                generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                read_at TIMESTAMP,
+                status TEXT DEFAULT 'pending'
+            )
+        """)
+        await db.commit()
+
 
 def get_db_path():
     return DATABASE_PATH
@@ -242,3 +255,38 @@ async def get_session_with_messages(session_id: str) -> dict | None:
     messages = await get_messages(session_id)
     session["messages"] = messages
     return session
+
+
+# --- Feedback queries ---
+
+async def save_feedback(session_id: str, content: str, status: str = "generated"):
+    """Save feedback for a session."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute(
+            """INSERT INTO feedback (session_id, content, status)
+               VALUES (?, ?, ?)""",
+            (session_id, content, status)
+        )
+        await db.commit()
+
+
+async def get_feedback(session_id: str) -> dict | None:
+    """Get feedback for a session, if it exists."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute(
+            "SELECT * FROM feedback WHERE session_id = ? ORDER BY generated_at DESC LIMIT 1",
+            (session_id,)
+        )
+        row = await cursor.fetchone()
+        return dict(row) if row else None
+
+
+async def mark_feedback_read(session_id: str):
+    """Mark feedback as read for a session."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute(
+            "UPDATE feedback SET read_at = CURRENT_TIMESTAMP WHERE session_id = ?",
+            (session_id,)
+        )
+        await db.commit()

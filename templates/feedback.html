@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Feedback — {{ persona.name }}{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto p-6">
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-sm text-slate-400 mb-2">
+            <span>{{ persona.icon }} {{ persona.name }}</span>
+            <span>·</span>
+            <span>Feedback</span>
+        </div>
+        <h1 class="text-xl font-semibold text-slate-900">Din vejledning efter samtalen</h1>
+        <p class="text-sm text-slate-500 mt-1">Personlig feedback baseret på konkrete øjeblikke fra dialogen</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <div class="prose prose-sm prose-slate max-w-none">
+            {{ feedback_html | safe }}
+        </div>
+    </div>
+
+    <div class="mt-8 flex justify-between items-center">
+        <a href="/sessions/{{ session_id }}/context" class="text-sm text-slate-400 hover:text-slate-600">&larr; Tilbage til kontekst</a>
+        <a href="/personas" class="px-5 py-2.5 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors">
+            Ny samtale
+        </a>
+    </div>
+</div>
+{% endblock %}

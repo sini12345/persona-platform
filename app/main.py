@@ -20,12 +20,14 @@ from app.database import (
     init_db, validate_group_code, create_session, end_session,
     get_session, save_message, get_messages, save_evaluation,
     get_all_groups, create_group, get_all_sessions, get_session_with_messages,
+    get_feedback, mark_feedback_read,
 )
 from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
 )
 from app.claude_client import stream_response, strip_indre_tags, generate_evaluation
 from app.auth import get_group_id, get_group_name
+from app.feedback import generate_feedback
 
 
 # --- Startup ---
@@ -533,6 +535,35 @@ async def evaluate_session(request: Request, session_id: str):
             f'<p class="text-red-500">Kunne ikke generere feedback: {str(e)}</p>',
             status_code=500,
         )
+
+
+# --- Feedback ---
+
+@app.get("/sessions/{session_id}/feedback", response_class=HTMLResponse)
+async def feedback_page(request: Request, session_id: str):
+    """Generate and display feedback for a session."""
+    session = await get_session(session_id)
+    if not session:
+        return RedirectResponse(url="/personas", status_code=303)
+
+    # Mark feedback as read
+    await mark_feedback_read(session_id)
+
+    try:
+        # Generate feedback (or get existing)
+        feedback_text = await generate_feedback(session_id)
+        feedback_html = md_to_html(feedback_text)
+    except Exception as e:
+        feedback_html = f'<p class="text-red-500">Kunne ikke generere feedback: {str(e)}</p>'
+
+    persona_id = session["persona_id"]
+
+    return templates.TemplateResponse("feedback.html", {
+        "request": request,
+        "session_id": session_id,
+        "persona": PERSONA_META[persona_id],
+        "feedback_html": feedback_html,
+    })
 
 
 # --- Health check ---
