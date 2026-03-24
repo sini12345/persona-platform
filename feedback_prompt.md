@@ -126,6 +126,14 @@ Student: "[CITAT]"
 
 ---
 
+## PERSONA-SPECIFIKKE HINTS
+
+Brug disse hints til at vide hvad du skal lede efter i samtalen med netop denne persona:
+
+{{persona_hints}}
+
+---
+
 ## SAMTALEDATA
 
 **Persona:** {{persona_navn}}

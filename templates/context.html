@@ -87,13 +87,11 @@
             {% else %}
                 <div id="feedback-container">
                     <p class="text-slate-600 mb-4">Få personlig feedback på din samtale baseret på konkrete øjeblikke fra dialogen.</p>
-                    <button
-                        onclick="requestFeedback()"
-                        id="feedback-btn"
-                        class="px-5 py-2.5 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors"
+                    <a href="/sessions/{{ session_id }}/questionnaire"
+                        class="inline-block px-5 py-2.5 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors"
                     >
-                        Få feedback på din samtale
-                    </button>
+                        Evaluer samtalen og se feedback
+                    </a>
                 </div>
             {% endif %}
         </div>

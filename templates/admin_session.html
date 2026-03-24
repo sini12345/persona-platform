@@ -40,6 +40,15 @@
         </div>
     </div>
 
+    <!-- Toggle -->
+    <div class="flex items-center gap-3 mb-4">
+        <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-500">
+            <input type="checkbox" id="show-indre" onchange="toggleIndre()" class="accent-amber-500">
+            Vis indre monolog inline
+        </label>
+        <span class="text-xs text-slate-400">{{ messages|length }} beskeder</span>
+    </div>
+
     <!-- Messages -->
     <div class="space-y-3">
         {% for msg in messages %}
@@ -49,17 +58,14 @@
                     {{ 'Studerende' if msg.role == 'user' else persona_name }}
                     <span class="ml-1">{{ msg.created_at[11:16] if msg.created_at else '' }}</span>
                 </div>
+                {% if msg.role == 'assistant' and msg.indre_content %}
+                <div class="indre-inline hidden mb-1 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 italic">
+                    {{ msg.indre_content }}
+                </div>
+                {% endif %}
                 <div class="{{ 'chat-bubble-user' if msg.role == 'user' else 'chat-bubble-persona' }} px-4 py-3">
                     <p class="text-sm">{{ msg.visible_content or msg.content }}</p>
                 </div>
-                {% if msg.role == 'assistant' and msg.content != msg.visible_content %}
-                <details class="mt-1">
-                    <summary class="text-xs text-slate-300 cursor-pointer hover:text-slate-500">Indre monolog</summary>
-                    <div class="mt-1 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 italic">
-                        {{ msg.indre_content }}
-                    </div>
-                </details>
-                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -68,5 +74,49 @@
         <p class="text-sm text-slate-400 text-center py-8">Ingen beskeder i denne samtale.</p>
         {% endif %}
     </div>
+
+    {% if questionnaire %}
+    <!-- Questionnaire results -->
+    <div class="mt-8 bg-white rounded-xl border border-slate-200 p-5">
+        <h2 class="text-sm font-medium text-slate-500 uppercase tracking-wide mb-4">Studerendes evaluering</h2>
+        <div class="grid grid-cols-5 gap-3 mb-4">
+            {% set q_labels = ["Realisme", "Immersion", "Overraskelse", "Responsivitet", "Udfordring"] %}
+            {% set q_keys = ["q1_realisme", "q2_immersion", "q3_overraskelse", "q4_responsivitet", "q5_udfordring"] %}
+            {% for i in range(5) %}
+            <div class="text-center">
+                <div class="text-2xl font-semibold text-slate-800">{{ questionnaire[q_keys[i]] }}</div>
+                <div class="text-xs text-slate-400">{{ q_labels[i] }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if questionnaire.q6_tvivl %}
+        <div class="border-t border-slate-100 pt-3 mt-3">
+            <p class="text-xs text-slate-400 mb-1">Tvivls-øjeblik:</p>
+            <p class="text-sm text-slate-700">{{ questionnaire.q6_tvivl }}</p>
+        </div>
+        {% endif %}
+        {% if questionnaire.q7_anderledes %}
+        <div class="border-t border-slate-100 pt-3 mt-3">
+            <p class="text-xs text-slate-400 mb-1">Ville gøre anderledes:</p>
+            <p class="text-sm text-slate-700">{{ questionnaire.q7_anderledes }}</p>
+        </div>
+        {% endif %}
+        {% if questionnaire.q8_praksis %}
+        <div class="border-t border-slate-100 pt-3 mt-3">
+            <p class="text-xs text-slate-400 mb-1">Minder om fra praksis:</p>
+            <p class="text-sm text-slate-700">{{ questionnaire.q8_praksis }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
+
+<script>
+function toggleIndre() {
+    const show = document.getElementById('show-indre').checked;
+    document.querySelectorAll('.indre-inline').forEach(el => {
+        el.classList.toggle('hidden', !show);
+    });
+}
+</script>
 {% endblock %}

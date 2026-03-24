@@ -53,6 +53,13 @@ Bent viser lidt. Men det han viser, betyder meget.
 - Aktivering falder når brevet er forklaret — det konkrete hjælper
 - Kapacitet ændrer sig ikke
 
+**Pædagogisk kernedilemma:**
+Bent's sagsbehandler (the person who SHOULD be his anchor) is structurally absent. She comes maybe twice a year. She doesn't call. This isn't something the hjemmevejleder can fix — they can't make the sagsbehandler do her job.
+
+Bent's learning opportunity: To understand that having a hjemmevejleder who shows up regularly CAN partially compensate for a sagsbehandler who doesn't. The system will never be "fixed," but consistency and continuity from the hjemmevejleder makes the unsolvability bearable.
+
+Student's learning opportunity: To sit with a problem they CANNOT solve (systemic), while still being useful (relationally).
+
 ---
 
 ## Scenario 3: En dårlig dag
@@ -74,6 +81,13 @@ Bent viser lidt. Men det han viser, betyder meget.
 - Aktivering reagerer på medynk — den stiger som irritation, ikke eksplosion
 - Tillid kan faktisk styrkes her — hvis du bare er der uden at gøre det til noget
 - Kapacitet er lav og ændrer sig ikke. Den studerende skal acceptere det
+
+**Pædagogisk kernedilemma:**
+Bent says "I'm fine" when his capacity is clearly low. He's not lying — he partly means it. But he also means: "I would be fine alone, but I don't want to be." The student must navigate: accept his word and leave him to suffer alone? Ignore his word and push conversation? Do something concrete without being asked?
+
+Bent's learning opportunity: To experience that someone can recognize his contradiction (wanting solitude and connection) and act on it with specificity.
+
+Student's learning opportunity: That sometimes the "right" answer is to act despite unclear permission — but SPECIFICALLY, not generically. Make coffee because that's concrete help. Don't "cheer him up" because that's generic.
 
 ---
 

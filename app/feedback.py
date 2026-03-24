@@ -106,6 +106,21 @@ async def build_feedback_prompt(session_id: str) -> str:
 
     template = template_path.read_text(encoding="utf-8")
 
+    # Load persona-specific feedback hints
+    hints_path = BASE_DIR / "feedback_hints.md"
+    persona_hints = ""
+    if hints_path.exists():
+        hints_content = hints_path.read_text(encoding="utf-8")
+        # Extract the section for this persona
+        import re as _re
+        pattern = _re.compile(
+            rf"## {_re.escape(persona_name)}\s*\n(.*?)(?=\n## |\Z)",
+            _re.DOTALL
+        )
+        match = pattern.search(hints_content)
+        if match:
+            persona_hints = match.group(1).strip()
+
     # Fill in template variables
     filled_prompt = template.replace("{{persona_navn}}", persona_name)
     filled_prompt = filled_prompt.replace("{{persona_alder}}", str(persona_age))
@@ -114,6 +129,7 @@ async def build_feedback_prompt(session_id: str) -> str:
     filled_prompt = filled_prompt.replace("{{scenario_navn}}", scenario_name)
     filled_prompt = filled_prompt.replace("{{mission_text}}", mission_text)
     filled_prompt = filled_prompt.replace("{{samtale_log}}", samtale_log)
+    filled_prompt = filled_prompt.replace("{{persona_hints}}", persona_hints or "(Ingen persona-specifikke hints tilgængelige)")
 
     return filled_prompt
 

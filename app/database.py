@@ -65,6 +65,24 @@ async def init_db():
         """)
         await db.commit()
 
+        # Add questionnaire table if it doesn't exist
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS questionnaire (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL REFERENCES sessions(id),
+                q1_realisme INTEGER CHECK(q1_realisme BETWEEN 1 AND 5),
+                q2_immersion INTEGER CHECK(q2_immersion BETWEEN 1 AND 5),
+                q3_overraskelse INTEGER CHECK(q3_overraskelse BETWEEN 1 AND 5),
+                q4_responsivitet INTEGER CHECK(q4_responsivitet BETWEEN 1 AND 5),
+                q5_udfordring INTEGER CHECK(q5_udfordring BETWEEN 1 AND 5),
+                q6_tvivl TEXT DEFAULT '',
+                q7_anderledes TEXT DEFAULT '',
+                q8_praksis TEXT DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        await db.commit()
+
 
 def get_db_path():
     return DATABASE_PATH
@@ -290,3 +308,33 @@ async def mark_feedback_read(session_id: str):
             (session_id,)
         )
         await db.commit()
+
+
+# --- Questionnaire queries ---
+
+async def save_questionnaire(session_id: str, data: dict):
+    """Save questionnaire responses for a session."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute("""
+            INSERT INTO questionnaire (session_id, q1_realisme, q2_immersion, q3_overraskelse,
+                q4_responsivitet, q5_udfordring, q6_tvivl, q7_anderledes, q8_praksis)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            session_id,
+            data.get("q1"), data.get("q2"), data.get("q3"),
+            data.get("q4"), data.get("q5"),
+            data.get("q6", ""), data.get("q7", ""), data.get("q8", ""),
+        ))
+        await db.commit()
+
+
+async def get_questionnaire(session_id: str) -> dict | None:
+    """Get questionnaire responses for a session."""
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute(
+            "SELECT * FROM questionnaire WHERE session_id = ? LIMIT 1",
+            (session_id,)
+        )
+        row = await cursor.fetchone()
+        return dict(row) if row else None

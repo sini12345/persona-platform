@@ -21,6 +21,7 @@ from app.database import (
     get_session, save_message, get_messages, save_evaluation,
     get_all_groups, create_group, get_all_sessions, get_session_with_messages,
     get_feedback, mark_feedback_read,
+    save_questionnaire, get_questionnaire,
 )
 from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
@@ -323,9 +324,9 @@ async def send_message(session_id: str, body: MessageContent):
 
 @app.post("/sessions/{session_id}/end")
 async def end_session_route(request: Request, session_id: str):
-    """Student manually ends the conversation."""
+    """Student manually ends the conversation → questionnaire → feedback."""
     await end_session(session_id, ended_by="student")
-    return RedirectResponse(url=f"/sessions/{session_id}/context", status_code=303)
+    return RedirectResponse(url=f"/sessions/{session_id}/questionnaire", status_code=303)
 
 
 # --- Context / Post-conversation ---
@@ -443,7 +444,7 @@ async def admin_create_group(request: Request, name: str = Form(...), code: str 
 
 @app.get("/admin/sessions/{session_id}", response_class=HTMLResponse)
 async def admin_view_session(request: Request, session_id: str):
-    """View a specific conversation with all messages."""
+    """View a specific conversation with all messages + questionnaire data."""
     if not check_admin(request):
         return RedirectResponse(url="/admin", status_code=303)
 
@@ -466,12 +467,16 @@ async def admin_view_session(request: Request, session_id: str):
 
     persona_name = PERSONA_META.get(session["persona_id"], {}).get("name", session["persona_id"])
 
+    # Get questionnaire data if available
+    questionnaire = await get_questionnaire(session_id)
+
     response = templates.TemplateResponse("admin_session.html", {
         "request": request,
         "session": session,
         "messages": display_messages,
         "persona_meta": PERSONA_META,
         "persona_name": persona_name,
+        "questionnaire": questionnaire,
     })
     response.set_cookie("is_admin", "true", max_age=86400)
     return response
@@ -535,6 +540,50 @@ async def evaluate_session(request: Request, session_id: str):
             f'<p class="text-red-500">Kunne ikke generere feedback: {str(e)}</p>',
             status_code=500,
         )
+
+
+# --- Questionnaire ---
+
+@app.get("/sessions/{session_id}/questionnaire", response_class=HTMLResponse)
+async def questionnaire_page(request: Request, session_id: str):
+    """Show post-conversation questionnaire."""
+    session = await get_session(session_id)
+    if not session:
+        return RedirectResponse(url="/personas", status_code=303)
+
+    # Skip if already answered — go straight to feedback
+    existing = await get_questionnaire(session_id)
+    if existing:
+        return RedirectResponse(url=f"/sessions/{session_id}/feedback", status_code=303)
+
+    persona_id = session["persona_id"]
+    return templates.TemplateResponse("questionnaire.html", {
+        "request": request,
+        "session_id": session_id,
+        "persona": PERSONA_META[persona_id],
+    })
+
+
+@app.post("/sessions/{session_id}/questionnaire")
+async def submit_questionnaire(request: Request, session_id: str):
+    """Save questionnaire and redirect to feedback."""
+    session = await get_session(session_id)
+    if not session:
+        return RedirectResponse(url="/personas", status_code=303)
+
+    form = await request.form()
+    data = {
+        "q1": int(form.get("q1", 0)),
+        "q2": int(form.get("q2", 0)),
+        "q3": int(form.get("q3", 0)),
+        "q4": int(form.get("q4", 0)),
+        "q5": int(form.get("q5", 0)),
+        "q6": str(form.get("q6", ""))[:500],
+        "q7": str(form.get("q7", ""))[:500],
+        "q8": str(form.get("q8", ""))[:500],
+    }
+    await save_questionnaire(session_id, data)
+    return RedirectResponse(url=f"/sessions/{session_id}/feedback", status_code=303)
 
 
 # --- Feedback ---

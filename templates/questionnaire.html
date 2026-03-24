@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Evaluering — {{ persona.name }}{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto p-6">
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-sm text-slate-400 mb-2">
+            <span>{{ persona.icon }} {{ persona.name }}</span>
+            <span>·</span>
+            <span>Evaluering</span>
+        </div>
+        <h1 class="text-xl font-semibold text-slate-900">Hvordan oplevede du samtalen?</h1>
+        <p class="text-sm text-slate-500 mt-1">Ca. 2 minutter — dine svar hjælper os med at gøre samtalerne bedre</p>
+    </div>
+
+    <form method="POST" action="/sessions/{{ session_id }}/questionnaire" id="questionnaire-form">
+        <!-- Del 1: Likert -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 mb-4">
+            <h2 class="text-sm font-medium text-slate-500 uppercase tracking-wide mb-5">Din oplevelse</h2>
+
+            {% set likert_questions = [
+                ("q1", "Hvor realistisk føltes samtalen?", "Slet ikke", "I høj grad"),
+                ("q2", "Følte du at du talte med en person — eller en AI?", "Klart en AI", "Klart en person"),
+                ("q3", "Var der et øjeblik der overraskede dig?", "Intet uventet", "Ja, helt klart"),
+                ("q4", "Oplevede du at din tilgang påvirkede samtalen?", "Slet ikke", "I høj grad"),
+                ("q5", "Hvor udfordrende var samtalen fagligt?", "For let", "Meget udfordrende"),
+            ] %}
+
+            {% for qid, label, anchor_low, anchor_high in likert_questions %}
+            <div class="mb-6 last:mb-0">
+                <p class="text-sm font-medium text-slate-800 mb-2">{{ label }}</p>
+                <div class="flex gap-1.5">
+                    {% for n in range(1, 6) %}
+                    <label class="flex-1">
+                        <input type="radio" name="{{ qid }}" value="{{ n }}" required class="sr-only peer">
+                        <div class="h-10 rounded-lg flex items-center justify-center text-sm font-medium cursor-pointer transition-all bg-slate-100 text-slate-500 hover:bg-slate-200 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:shadow-sm">
+                            {{ n }}
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+                <div class="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>{{ anchor_low }}</span>
+                    <span>{{ anchor_high }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Del 2: Åbne spørgsmål -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 mb-4">
+            <h2 class="text-sm font-medium text-slate-500 uppercase tracking-wide mb-5">Faglig refleksion</h2>
+            <p class="text-sm text-slate-500 mb-4">Korte svar er fine. Skriv det første der falder dig ind.</p>
+
+            <div class="mb-5">
+                <label class="text-sm font-medium text-slate-800 block mb-2">
+                    Beskriv ét øjeblik hvor du var i tvivl om hvad du skulle sige.
+                </label>
+                <textarea name="q6" rows="2" maxlength="500" required
+                    placeholder="Fx: Da hun sagde 'det er fint' men virkede lukket..."
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none"></textarea>
+            </div>
+
+            <div class="mb-5">
+                <label class="text-sm font-medium text-slate-800 block mb-2">
+                    Hvad ville du gøre anderledes næste gang?
+                </label>
+                <textarea name="q7" rows="2" maxlength="500" required
+                    placeholder="Fx: Jeg ville vente længere med at foreslå en løsning..."
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none"></textarea>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-sm font-medium text-slate-800">
+                        Mindede personen dig om nogen du har mødt i praksis?
+                    </label>
+                    <span class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Valgfrit</span>
+                </div>
+                <textarea name="q8" rows="2" maxlength="500"
+                    placeholder="Spring over hvis du ikke har praktikerfaring"
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none"></textarea>
+            </div>
+        </div>
+
+        <button type="submit"
+            class="w-full py-2.5 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors">
+            Send og se feedback
+        </button>
+    </form>
+
+    <p class="text-center text-xs text-slate-400 mt-3">
+        Dine svar er anonyme og bruges kun til at forbedre samtalerne
+    </p>
+</div>
+{% endblock %}
