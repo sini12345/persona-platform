@@ -38,7 +38,7 @@ Du skal IKKE finde alle fem — bare 2-3 af dem, de vigtigste for denne samtale.
 
 ```
 **[Kort, neutral overskrift — ikke bedømmende]**
-Student sagde: "[DIREKTE CITAT fra samtalen]"
+Du sagde: "[DIREKTE CITAT fra samtalen]"
 {{persona_navn}} tænkte: "[DIREKTE CITAT fra <indre>-tag]"
 Hvad der skete: [Din iagttagelse. 1-2 sætninger. Konkret, ikke moraliserende.]
 ```
@@ -85,7 +85,7 @@ Skriv ét åbent spørgsmål som den studerende kan tage med og tænke over:
 ## Øjeblikke fra samtalen
 
 **[Øjeblik 1 — kort overskrift]**
-Student: "[CITAT]"
+Du sagde: "[CITAT]"
 {{persona_navn}} tænkte: "[CITAT fra indre]"
 [Din iagttagelse — 1-2 sætninger]
 
