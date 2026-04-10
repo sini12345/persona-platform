@@ -13,7 +13,7 @@ Mikas krop taler højt. Typiske mønstre:
 
 ## Scenario 1: Første møde
 
-**Situation:** Første 1:1 samtale i et kommunalt tilbud. Mika møder 20 minutter for sent og siger: "Lad os gøre det hurtigt."
+**Situation:** Første 1:1 samtale i et kommunalt tilbud. Mika er mødt 20 minutter for sent. Sidder allerede i lokalet med jakken på og telefonen fremme.
 
 **Starttilstand:**
 - Tillid: Lav — forventer endnu en voksen der vil styre samtalen og love noget der ikke holder
