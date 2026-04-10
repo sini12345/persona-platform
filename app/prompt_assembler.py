@@ -228,7 +228,8 @@ def get_missions(persona_id: str, scenario_number: int) -> list[dict]:
         if match:
             missions = []
             for letter in ["A", "B", "C"]:
-                pattern = rf"\*\*Mission {letter}:\*\*\s*(.+?)(?=\n\n|\n\*\*|\Z)"
+                # Support both "Mission A:" and "Opgave A:" formats
+                pattern = rf"\*\*(?:Mission|Opgave) {letter}:\*\*\s*(.+?)(?=\n\n|\n\*\*|\Z)"
                 m = re.search(pattern, block, re.DOTALL)
                 if m:
                     missions.append({"id": letter, "text": m.group(1).strip()})
