@@ -12,10 +12,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
-
-import re
-from app.config import PERSONA_META, BASE_DIR, ADMIN_PASSWORD
+from app.config import PERSONA_META, BASE_DIR
 from app.database import (
     init_db, validate_group_code, create_session, end_session,
     get_session, save_message, get_messages, save_evaluation,
@@ -27,7 +24,7 @@ from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
 )
 from app.claude_client import stream_response, strip_indre_tags, generate_evaluation
-from app.auth import get_group_id, get_group_name
+from app.auth import get_group_id, get_group_name, require_admin
 from app.feedback import generate_feedback
 
 
@@ -257,12 +254,11 @@ async def chat_page(request: Request, session_id: str):
 
 # --- Send Message + Stream Response ---
 
-class MessageContent(BaseModel):
-    content: str
+from app.models import MessageRequest
 
 
 @app.post("/sessions/{session_id}/send")
-async def send_message(session_id: str, body: MessageContent):
+async def send_message(session_id: str, body: MessageRequest):
     """
     Receive a student message and stream the persona's response via SSE.
     """
@@ -376,18 +372,10 @@ async def context_page(request: Request, session_id: str):
 
 # --- Admin ---
 
-def check_admin(request: Request) -> bool:
-    """Check if request has admin access via cookie or query param."""
-    pwd = request.query_params.get("pwd", "")
-    if pwd == ADMIN_PASSWORD:
-        return True
-    return request.cookies.get("is_admin") == "true"
-
-
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_dashboard(request: Request, group: str | None = None):
     """Admin dashboard with overview of all conversations."""
-    if not check_admin(request):
+    if not require_admin(request):
         return HTMLResponse(
             """<div style="font-family:sans-serif;max-width:300px;margin:100px auto;text-align:center">
             <h2>Admin login</h2>
@@ -431,7 +419,7 @@ async def admin_dashboard(request: Request, group: str | None = None):
 @app.post("/admin/groups")
 async def admin_create_group(request: Request, name: str = Form(...), code: str = Form(...)):
     """Create a new group code."""
-    if not check_admin(request):
+    if not require_admin(request):
         return HTMLResponse('<p class="text-red-500">Ikke autoriseret</p>')
 
     group_id = str(uuid.uuid4())[:8]
@@ -445,7 +433,7 @@ async def admin_create_group(request: Request, name: str = Form(...), code: str 
 @app.get("/admin/sessions/{session_id}", response_class=HTMLResponse)
 async def admin_view_session(request: Request, session_id: str):
     """View a specific conversation with all messages + questionnaire data."""
-    if not check_admin(request):
+    if not require_admin(request):
         return RedirectResponse(url="/admin", status_code=303)
 
     session = await get_session(session_id)

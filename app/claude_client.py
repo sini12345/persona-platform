@@ -189,7 +189,7 @@ def sync_response(system_prompt: str, conversation_history: list[dict]) -> dict:
     """
     Non-streaming response for testing. Returns full and visible content.
     """
-    client = get_client()
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     messages = build_messages(conversation_history, prefill=True)
 
     response = client.messages.create(
