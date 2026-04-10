@@ -3,10 +3,10 @@ Feedback system: extracts inner monologue, builds conversation context, generate
 """
 import re
 from pathlib import Path
-from app.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, MAX_TOKENS, BASE_DIR, PERSONA_META
+from app.config import CLAUDE_MODEL, MAX_TOKENS, BASE_DIR, PERSONA_META
 from app.database import get_session, get_messages, get_feedback, save_feedback
 from app.prompt_assembler import parse_scenarios, get_briefing
-import anthropic
+from app.claude_client import get_client
 
 
 def extract_indre_tags(content: str) -> str:
@@ -26,12 +26,13 @@ async def reconstruct_conversation(session_id: str) -> list[dict]:
     """
     messages = await get_messages(session_id)
     exchanges = []
+    current_exchange = None
 
     for i, msg in enumerate(messages):
         if msg["role"] == "user":
             # Start a new exchange with the student message
             current_exchange = {"student": msg["content"]}
-        elif msg["role"] == "assistant":
+        elif msg["role"] == "assistant" and current_exchange is not None:
             # This is the response to the most recent student message
             indre_content = extract_indre_tags(msg["content"])
             visible = msg["visible_content"] or re.sub(r"<indre>.*?</indre>\s*", "", msg["content"], flags=re.DOTALL).strip()
@@ -39,6 +40,7 @@ async def reconstruct_conversation(session_id: str) -> list[dict]:
             current_exchange["indre"] = indre_content
             current_exchange["assistant"] = visible
             exchanges.append(current_exchange)
+            current_exchange = None
 
     return exchanges
 
@@ -112,10 +114,9 @@ async def build_feedback_prompt(session_id: str) -> str:
     if hints_path.exists():
         hints_content = hints_path.read_text(encoding="utf-8")
         # Extract the section for this persona
-        import re as _re
-        pattern = _re.compile(
-            rf"## {_re.escape(persona_name)}\s*\n(.*?)(?=\n## |\Z)",
-            _re.DOTALL
+        pattern = re.compile(
+            rf"## {re.escape(persona_name)}\s*\n(.*?)(?=\n## |\Z)",
+            re.DOTALL
         )
         match = pattern.search(hints_content)
         if match:
@@ -164,7 +165,7 @@ async def generate_feedback(session_id: str) -> str:
     prompt = await build_feedback_prompt(session_id)
 
     # Call Claude API
-    client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
+    client = get_client()
 
     response = await client.messages.create(
         model=CLAUDE_MODEL,
@@ -178,8 +179,3 @@ async def generate_feedback(session_id: str) -> str:
     await save_feedback(session_id, feedback_text, status="generated")
 
     return feedback_text
-
-
-def get_client() -> anthropic.AsyncAnthropic:
-    """Create an async Anthropic client."""
-    return anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
