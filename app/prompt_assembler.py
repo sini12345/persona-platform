@@ -42,17 +42,6 @@ def parse_scenarios(persona_id: str) -> dict[int, dict]:
 
         scenario = {"title": title, "number": num}
 
-        # Extract niveau (progression level) if present
-        niveau_match = re.search(
-            r"\*\*Niveau:\*\*\s*(.+?)(?=\n\n|\n\*\*)", block, re.DOTALL
-        )
-        if niveau_match:
-            raw = niveau_match.group(1).strip()
-            # Split on em-dash or hyphen into label + description
-            parts = re.split(r"\s*[—–-]\s*", raw, maxsplit=1)
-            scenario["niveau_label"] = parts[0].strip()
-            scenario["niveau_beskrivelse"] = parts[1].strip() if len(parts) > 1 else ""
-
         # Extract situation
         sit_match = re.search(
             r"\*\*Situation:\*\*\s*(.+?)(?=\n\n|\n\*\*)", block, re.DOTALL
@@ -162,6 +151,7 @@ def assemble_system_prompt(persona_id: str, scenario_number: int) -> str:
         "afslutningstype": derive_afslutningstype(scenario),
         "scenario_maal": derive_scenario_goals(scenario, persona_id),
         "scenario_situation": scenario.get("situation", ""),
+        "scenario_dynamik": scenario.get("dynamik", ""),
     }
 
     # Replace all {{variables}} in template
@@ -263,8 +253,6 @@ def get_scenario_list(persona_id: str) -> list[dict]:
             "title": s["title"],
             "situation": s.get("situation", ""),
             "fokus": s.get("paedagogisk_fokus", ""),
-            "niveau_label": s.get("niveau_label", ""),
-            "niveau_beskrivelse": s.get("niveau_beskrivelse", ""),
         }
         for num, s in sorted(scenarios.items())
     ]
