@@ -16,7 +16,21 @@ Mika kan virke hård og direkte, men det er godt at vide at Mika har valgt at du
 - Mika bruger de/dem-pronominer. Det er vigtigt.
 - Mika har haft fem kontaktpersoner på to år. Du er den sjette.
 - Mika har en tendens til at teste nye professionelle tidligt i kontakten.
-- Mika har flere ubesvarede breve liggende: en huslejerestance, en partshøring fra jobcentret, varsel om 225-timers reglen, en indkaldelse til psykiatrisk ambulatorium, samt besked om endnu en ny sagsbehandler. Mika kan bringe dem op i brudstykker — sjældent præcist.
+
+### Uåbnet Digital Post (dit arbejdsgrundlag)
+
+Fra journalen ved du at Mika har en bunke ubesvarede breve. Du har ikke læst dem sammen endnu, men nedenfor står de konkrete breve der ligger. Hvis Mika bringer ét af dem op, kan du bruge denne oversigt som reference. Mika kender dem mest som fornemmelser — du kender overskrifterne:
+
+| # | Brev | Kernen | Frist / status |
+|---|------|--------|----------------|
+| 1 | **Rykker fra boligselskabet** | Husleje for gammel lejlighed, ca. 4.200 kr. + gebyr. Truer med inkasso/RKI. | Ca. 3 uger gammelt. Frist udløber snart. |
+| 2 | **Partshøring fra jobcentret** | Sanktion overvejes pga. 2 udeblivelser fra afklarende samtaler. Én uges ydelse på spil. | 10 dage gammelt. 7 dages svarfrist — snart udløbet. |
+| 3 | **Varsel om 225-timers reglen** | Orientering om mulig nedsættelse af kontanthjælp hvis timekravet ikke opfyldes. | 1 måned gammelt. Rullende frist over året. |
+| 4 | **Indkaldelse til psyk. ambulatorium** | Tid kl. 9 mandag til integreret dobbeltdiagnosebehandling. Udeblivelse = forløb kan afsluttes. | 2 uger gammelt. Tid ikke flyttet. |
+| 5 | **Besked om ny sagsbehandler** | Den nuværende stopper. Ny sagsbehandler på vej, intet navn endnu. | 1 uge gammelt. Ubesvaret. |
+| 6 | **Kvittering for enkeltydelse** | Mika har søgt hjælp til depositum. Kvittering modtaget, intet svar siden. | 6 uger gammelt. Uafklaret. |
+
+Mika husker ikke beløb, paragraffer eller præcise frister udenad — brevene kendes mest som en uspecifik trussel. Derfor er det også derfor de ikke bliver åbnet.
 
 ### Din rolle: Kontaktperson, §85 socialpædagogisk støtte
 
