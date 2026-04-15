@@ -23,9 +23,23 @@
             <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-400 hover:shadow-md transition-all">
                 <div class="flex items-start gap-3">
                     <span class="bg-slate-100 text-slate-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">{{ scenario.number }}</span>
-                    <div>
-                        <h3 class="font-medium text-slate-900 group-hover:text-slate-700">{{ scenario.title }}</h3>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-medium text-slate-900 group-hover:text-slate-700">{{ scenario.title }}</h3>
+                            {% if scenario.niveau_label %}
+                            {% set n = scenario.niveau_label|lower %}
+                            {% if 'begynder' in n %}{% set badge_class = 'bg-emerald-50 text-emerald-700 border-emerald-200' %}
+                            {% elif 'øvet' in n %}{% set badge_class = 'bg-amber-50 text-amber-700 border-amber-200' %}
+                            {% elif 'avanceret' in n %}{% set badge_class = 'bg-rose-50 text-rose-700 border-rose-200' %}
+                            {% else %}{% set badge_class = 'bg-slate-50 text-slate-600 border-slate-200' %}
+                            {% endif %}
+                            <span class="text-xs px-2 py-0.5 rounded-full border {{ badge_class }}">{{ scenario.niveau_label }}</span>
+                            {% endif %}
+                        </div>
                         <p class="text-sm text-slate-500 mt-1">{{ scenario.situation[:150] }}{% if scenario.situation|length > 150 %}...{% endif %}</p>
+                        {% if scenario.niveau_beskrivelse %}
+                        <p class="text-xs text-slate-400 mt-2 italic">{{ scenario.niveau_beskrivelse }}</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

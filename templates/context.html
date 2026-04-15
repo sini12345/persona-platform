@@ -50,7 +50,14 @@
     </div>
     <div id="content-samtale" class="tab-content hidden">
         <div class="bg-white rounded-xl border border-slate-200 p-6">
-            <p class="text-sm text-slate-500 mb-4">Din samtale med {{ persona.name }} — inklusiv personaens indre tanker, som du ikke kunne se under samtalen.</p>
+            <div class="flex items-center justify-between mb-4 gap-4">
+                <p class="text-sm text-slate-500">Din samtale med {{ persona.name }} — inklusiv personaens indre tanker, som du ikke kunne se under samtalen.</p>
+                <a href="/sessions/{{ session_id }}/export"
+                   download
+                   class="flex-shrink-0 text-xs px-3 py-1.5 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+                    Gem samtale
+                </a>
+            </div>
             <div class="space-y-4">
                 {% for msg in messages %}
                     {% if msg.role == "user" %}

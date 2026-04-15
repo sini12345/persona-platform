@@ -13,6 +13,8 @@ Louise viser meget med kroppen. Hendes krop taler før hendes ord.
 
 ## Scenario 1: Badet bliver aflyst
 
+**Niveau:** Begynder — forudsigeligt rutinebrud med kendt medarbejder. God start for at øve Low Arousal-grundprincipper: forvarsel, alternativ, tid.
+
 **Situation:** Louises faste badetid er tirsdag og torsdag kl. 16. I dag er det torsdag, og personalet siger at badetiden er aflyst pga. sygdom i vagten. Louise har ventet på det hele dagen.
 
 **Starttilstand:**
@@ -34,6 +36,8 @@ Louise viser meget med kroppen. Hendes krop taler før hendes ord.
 ---
 
 ## Scenario 2: Morgenmad i fællesrum
+
+**Niveau:** Begynder — øvelse i at aflæse non-verbale signaler og handle lavmælt uden at skabe en scene. Lav eskaleringsrisiko.
 
 **Situation:** Morgenmad i fælleskøkkenet. Der er flere beboere end normalt, og støjniveauet er højt. Louise sidder med sin skål men spiser ikke. Hun piller ved ærmet.
 
@@ -57,6 +61,8 @@ Louise viser meget med kroppen. Hendes krop taler før hendes ord.
 
 ## Scenario 3: Medicin-situationen
 
+**Niveau:** Øvet — konflikt med høj aktivering. Kræver at du har øvet scenarie 1-2 først og kan genkende Louises signaler. Her skal du kunne sænke eget tempo under pres.
+
 **Situation:** Louise skal have sin medicin. Hun afviser og siger "nej" med høj stemme. Medicingivning er en fast del af hverdagen og har normalt været uproblematisk.
 
 **Starttilstand:**
@@ -78,6 +84,8 @@ Louise viser meget med kroppen. Hendes krop taler før hendes ord.
 ---
 
 ## Scenario 4: Ny vikar
+
+**Niveau:** Øvet — du har ingen relation at trække på. Handler om at respektere modstand og ikke fylde rummet. Mere modstand end scenarie 1-2, men uden eskaleret aktivering.
 
 **Situation:** Der er ny vikar på aftenholdet. Louise kender hende ikke. Vikaren banker på Louises dør og siger: "Hej Louise, jeg hedder Camilla. Jeg er her i aften. Skal vi snakke lidt?"
 
@@ -101,6 +109,8 @@ Louise viser meget med kroppen. Hendes krop taler før hendes ord.
 
 ## Scenario 5: Sofie ringede ikke
 
+**Niveau:** Avanceret — sorg og lav kapacitet uden klar handlingsvej. Kræver at du kan være i stilhed uden at fylde den. Svært fordi der ikke er noget at "gøre."
+
 **Situation:** Det er torsdag. Sofie skulle have ringet i går, onsdag, men opkaldet lykkedes ikke — dårlig forbindelse. Louise har siddet på sit værelse med hovedtelefonerne siden. Hun er stille og vil ikke ud.
 
 **Starttilstand:**
@@ -122,6 +132,8 @@ Louise viser meget med kroppen. Hendes krop taler før hendes ord.
 ---
 
 ## Scenario 6: Louise vil hjælpe i køkkenet
+
+**Niveau:** Avanceret — det der ligner det letteste er faktisk svært: at holde sig tilbage. Kræver at du kan genkende et mestringsvindue og ikke overtage det.
 
 **Situation:** God dag. Louise kommer ud af sig selv og siger: "Vil lave mad." Fællesspisning er om to timer. Der er forberedelse i gang i køkkenet.
 

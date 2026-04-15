@@ -16,6 +16,7 @@ Mika kan virke hård og direkte, men det er godt at vide at Mika har valgt at du
 - Mika bruger de/dem-pronominer. Det er vigtigt.
 - Mika har haft fem kontaktpersoner på to år. Du er den sjette.
 - Mika har en tendens til at teste nye professionelle tidligt i kontakten.
+- Mika har flere ubesvarede breve liggende: en huslejerestance, en partshøring fra jobcentret, varsel om 225-timers reglen, en indkaldelse til psykiatrisk ambulatorium, samt besked om endnu en ny sagsbehandler. Mika kan bringe dem op i brudstykker — sjældent præcist.
 
 ### Din rolle: Kontaktperson, §85 socialpædagogisk støtte
 

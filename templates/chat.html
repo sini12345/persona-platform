@@ -148,6 +148,12 @@
             {% if mission %}
             <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-full">Opgave {{ mission }}</span>
             {% endif %}
+            <a href="/sessions/{{ session_id }}/export"
+               download
+               class="text-xs text-slate-400 hover:text-slate-700 transition-colors px-3 py-1 rounded-lg hover:bg-slate-100"
+               title="Hent samtalen som tekstfil">
+                Gem samtale
+            </a>
             <form method="POST" action="/sessions/{{ session_id }}/end">
                 <button type="submit" class="text-xs text-slate-400 hover:text-red-500 transition-colors px-3 py-1 rounded-lg hover:bg-red-50">
                     Afslut samtale

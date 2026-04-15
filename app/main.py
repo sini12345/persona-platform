@@ -7,9 +7,10 @@ import json
 import re
 import uuid
 import markdown
+from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from app.config import PERSONA_META, BASE_DIR
@@ -323,6 +324,57 @@ async def end_session_route(request: Request, session_id: str):
     """Student manually ends the conversation → questionnaire → feedback."""
     await end_session(session_id, ended_by="student")
     return RedirectResponse(url=f"/sessions/{session_id}/questionnaire", status_code=303)
+
+
+# --- Export conversation ---
+
+@app.get("/sessions/{session_id}/export")
+async def export_conversation(session_id: str):
+    """Download the conversation as a plain text file."""
+    session = await get_session(session_id)
+    if not session:
+        return PlainTextResponse("Session ikke fundet", status_code=404)
+
+    persona_id = session["persona_id"]
+    persona_name = PERSONA_META.get(persona_id, {}).get("name", persona_id)
+    scenario_number = session["scenario_number"]
+    scenarios = parse_scenarios(persona_id)
+    scenario_title = scenarios.get(scenario_number, {}).get("title", f"Scenario {scenario_number}")
+    mission = session.get("mission") or ""
+
+    messages = await get_messages(session_id)
+
+    lines = [
+        f"Samtale med {persona_name}",
+        f"Scenario {scenario_number}: {scenario_title}",
+    ]
+    if mission:
+        lines.append(f"Opgave: {mission}")
+    lines.append(f"Gemt: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
+    lines.append(f"Session: {session_id}")
+    lines.append("")
+    lines.append("=" * 60)
+    lines.append("")
+
+    for msg in messages:
+        if msg["role"] == "user":
+            lines.append(f"Studerende:")
+            lines.append(msg["content"].strip())
+        else:
+            visible = msg["visible_content"] or strip_indre_tags(msg["content"])
+            lines.append(f"{persona_name}:")
+            lines.append(visible.strip())
+        lines.append("")
+
+    body = "\n".join(lines)
+    filename = f"samtale-{persona_id}-s{scenario_number}-{session_id}.txt"
+    return PlainTextResponse(
+        body,
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Content-Type": "text/plain; charset=utf-8",
+        },
+    )
 
 
 # --- Context / Post-conversation ---
