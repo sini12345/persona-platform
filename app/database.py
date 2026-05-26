@@ -45,44 +45,6 @@ async def init_db():
         """)
         await db.commit()
 
-        # Add evaluation column if it doesn't exist (safe migration)
-        try:
-            await db.execute("ALTER TABLE sessions ADD COLUMN evaluation TEXT")
-            await db.commit()
-        except Exception:
-            pass  # Column already exists
-
-        # Add feedback table if it doesn't exist
-        await db.execute("""
-            CREATE TABLE IF NOT EXISTS feedback (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT NOT NULL REFERENCES sessions(id),
-                content TEXT NOT NULL,
-                generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                read_at TIMESTAMP,
-                status TEXT DEFAULT 'pending'
-            )
-        """)
-        await db.commit()
-
-        # Add questionnaire table if it doesn't exist
-        await db.execute("""
-            CREATE TABLE IF NOT EXISTS questionnaire (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT NOT NULL REFERENCES sessions(id),
-                q1_realisme INTEGER CHECK(q1_realisme BETWEEN 1 AND 5),
-                q2_immersion INTEGER CHECK(q2_immersion BETWEEN 1 AND 5),
-                q3_overraskelse INTEGER CHECK(q3_overraskelse BETWEEN 1 AND 5),
-                q4_responsivitet INTEGER CHECK(q4_responsivitet BETWEEN 1 AND 5),
-                q5_udfordring INTEGER CHECK(q5_udfordring BETWEEN 1 AND 5),
-                q6_tvivl TEXT DEFAULT '',
-                q7_anderledes TEXT DEFAULT '',
-                q8_praksis TEXT DEFAULT '',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        await db.commit()
-
 
 def get_db_path():
     return DATABASE_PATH
@@ -193,16 +155,6 @@ async def get_group_stats(group_id: str) -> dict:
         return {"total_sessions": total, "per_persona": per_persona}
 
 
-async def save_evaluation(session_id: str, evaluation: str):
-    """Save evaluation text for a session."""
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute(
-            "UPDATE sessions SET evaluation = ? WHERE id = ?",
-            (evaluation, session_id)
-        )
-        await db.commit()
-
-
 async def create_group(group_id: str, name: str, code: str):
     """Create a new group."""
     async with aiosqlite.connect(DATABASE_PATH) as db:
@@ -273,68 +225,3 @@ async def get_session_with_messages(session_id: str) -> dict | None:
     messages = await get_messages(session_id)
     session["messages"] = messages
     return session
-
-
-# --- Feedback queries ---
-
-async def save_feedback(session_id: str, content: str, status: str = "generated"):
-    """Save feedback for a session."""
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute(
-            """INSERT INTO feedback (session_id, content, status)
-               VALUES (?, ?, ?)""",
-            (session_id, content, status)
-        )
-        await db.commit()
-
-
-async def get_feedback(session_id: str) -> dict | None:
-    """Get feedback for a session, if it exists."""
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        cursor = await db.execute(
-            "SELECT * FROM feedback WHERE session_id = ? ORDER BY generated_at DESC LIMIT 1",
-            (session_id,)
-        )
-        row = await cursor.fetchone()
-        return dict(row) if row else None
-
-
-async def mark_feedback_read(session_id: str):
-    """Mark feedback as read for a session."""
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute(
-            "UPDATE feedback SET read_at = CURRENT_TIMESTAMP WHERE session_id = ?",
-            (session_id,)
-        )
-        await db.commit()
-
-
-# --- Questionnaire queries ---
-
-async def save_questionnaire(session_id: str, data: dict):
-    """Save questionnaire responses for a session."""
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute("""
-            INSERT INTO questionnaire (session_id, q1_realisme, q2_immersion, q3_overraskelse,
-                q4_responsivitet, q5_udfordring, q6_tvivl, q7_anderledes, q8_praksis)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            session_id,
-            data.get("q1"), data.get("q2"), data.get("q3"),
-            data.get("q4"), data.get("q5"),
-            data.get("q6", ""), data.get("q7", ""), data.get("q8", ""),
-        ))
-        await db.commit()
-
-
-async def get_questionnaire(session_id: str) -> dict | None:
-    """Get questionnaire responses for a session."""
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        cursor = await db.execute(
-            "SELECT * FROM questionnaire WHERE session_id = ? LIMIT 1",
-            (session_id,)
-        )
-        row = await cursor.fetchone()
-        return dict(row) if row else None
