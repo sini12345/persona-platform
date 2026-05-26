@@ -24,7 +24,7 @@ from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
 )
 from app.claude_client import stream_response, strip_indre_tags, generate_evaluation
-from app.auth import get_group_id, get_group_name, require_admin
+from app.auth import get_group_id, get_group_name, require_admin, admin_cookie_value
 from app.feedback import generate_feedback
 
 
@@ -72,8 +72,8 @@ async def login(request: Request, code: str = Form(...)):
             status_code=200,
         )
     response = RedirectResponse(url="/personas", status_code=303)
-    response.set_cookie("group_id", group["id"], max_age=86400 * 30)
-    response.set_cookie("group_name", group["name"], max_age=86400 * 30)
+    response.set_cookie("group_id", group["id"], max_age=86400 * 30, httponly=True, samesite="lax")
+    response.set_cookie("group_name", group["name"], max_age=86400 * 30, httponly=True, samesite="lax")
     return response
 
 
@@ -305,15 +305,29 @@ async def send_message(session_id: str, body: MessageRequest):
         if full_content:
             await save_message(session_id, "assistant", full_content, visible_content)
 
-        # Check if persona ended the conversation (look for exit signals)
-        if any(signal in visible_content.lower() for signal in [
-            "vi er færdige", "vi ses", "jeg går", "lukker vi den her",
-            "det her giver ikke mening", "vi er done"
-        ]):
+        # Check if persona ended the conversation. Only inspect the tail of
+        # the message and require fairly unambiguous closing phrases — a loose
+        # substring match (e.g. "jeg går" inside "jeg går en tur") would
+        # wrongly lock the conversation mid-dialogue.
+        tail = visible_content.lower().strip()[-120:]
+        exit_signals = [
+            "vi er færdige", "vi er done", "vi stopper her", "vi slutter her",
+            "lukker vi den her", "så er vi vist færdige", "vi tales ved",
+            "det her giver ingen mening", "jeg gider ikke mere",
+        ]
+        if any(signal in tail for signal in exit_signals):
             await end_session(session_id, ended_by="persona")
             yield f"data: {json.dumps({'type': 'end', 'ended_by': 'persona'})}\n\n"
 
-    return StreamingResponse(generate(), media_type="text/event-stream")
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",  # disable proxy buffering (nginx/Railway)
+        },
+    )
 
 
 # --- End Session ---
@@ -412,7 +426,7 @@ async def admin_dashboard(request: Request, group: str | None = None):
         "filter_group": group,
     })
     # Set admin cookie so they don't need password again
-    response.set_cookie("is_admin", "true", max_age=86400)
+    response.set_cookie("is_admin", admin_cookie_value(), max_age=86400, httponly=True, samesite="lax")
     return response
 
 
@@ -466,7 +480,7 @@ async def admin_view_session(request: Request, session_id: str):
         "persona_name": persona_name,
         "questionnaire": questionnaire,
     })
-    response.set_cookie("is_admin", "true", max_age=86400)
+    response.set_cookie("is_admin", admin_cookie_value(), max_age=86400, httponly=True, samesite="lax")
     return response
 
 
@@ -560,12 +574,22 @@ async def submit_questionnaire(request: Request, session_id: str):
         return RedirectResponse(url="/personas", status_code=303)
 
     form = await request.form()
+
+    def likert(key):
+        """Parse a 1–5 Likert value; return None if missing/out of range
+        so it satisfies the DB CHECK constraint instead of crashing."""
+        try:
+            n = int(form.get(key, ""))
+        except (TypeError, ValueError):
+            return None
+        return n if 1 <= n <= 5 else None
+
     data = {
-        "q1": int(form.get("q1", 0)),
-        "q2": int(form.get("q2", 0)),
-        "q3": int(form.get("q3", 0)),
-        "q4": int(form.get("q4", 0)),
-        "q5": int(form.get("q5", 0)),
+        "q1": likert("q1"),
+        "q2": likert("q2"),
+        "q3": likert("q3"),
+        "q4": likert("q4"),
+        "q5": likert("q5"),
         "q6": str(form.get("q6", ""))[:500],
         "q7": str(form.get("q7", ""))[:500],
         "q8": str(form.get("q8", ""))[:500],
