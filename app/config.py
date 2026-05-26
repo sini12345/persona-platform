@@ -47,7 +47,7 @@ PERSONA_META = {
         "pronouns": "han/ham",
         "short": "74 år. Plejehjem. Høfligt lukket. Savner sin have og sin kone Inger.",
         "color": "green",
-        "role": "Pædagog/sosu, plejehjem",
+        "role": "Pædagog/SOSU, plejehjem",
         "icon": "🌿",
     },
     "louise": {
