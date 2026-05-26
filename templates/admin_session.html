@@ -74,41 +74,6 @@
         <p class="text-sm text-slate-400 text-center py-8">Ingen beskeder i denne samtale.</p>
         {% endif %}
     </div>
-
-    {% if questionnaire %}
-    <!-- Questionnaire results -->
-    <div class="mt-8 bg-white rounded-xl border border-slate-200 p-5">
-        <h2 class="text-sm font-medium text-slate-500 uppercase tracking-wide mb-4">Studerendes evaluering</h2>
-        <div class="grid grid-cols-5 gap-3 mb-4">
-            {% set q_labels = ["Realisme", "Immersion", "Overraskelse", "Responsivitet", "Udfordring"] %}
-            {% set q_keys = ["q1_realisme", "q2_immersion", "q3_overraskelse", "q4_responsivitet", "q5_udfordring"] %}
-            {% for i in range(5) %}
-            <div class="text-center">
-                <div class="text-2xl font-semibold text-slate-800">{{ questionnaire[q_keys[i]] }}</div>
-                <div class="text-xs text-slate-400">{{ q_labels[i] }}</div>
-            </div>
-            {% endfor %}
-        </div>
-        {% if questionnaire.q6_tvivl %}
-        <div class="border-t border-slate-100 pt-3 mt-3">
-            <p class="text-xs text-slate-400 mb-1">Tvivls-øjeblik:</p>
-            <p class="text-sm text-slate-700">{{ questionnaire.q6_tvivl }}</p>
-        </div>
-        {% endif %}
-        {% if questionnaire.q7_anderledes %}
-        <div class="border-t border-slate-100 pt-3 mt-3">
-            <p class="text-xs text-slate-400 mb-1">Ville gøre anderledes:</p>
-            <p class="text-sm text-slate-700">{{ questionnaire.q7_anderledes }}</p>
-        </div>
-        {% endif %}
-        {% if questionnaire.q8_praksis %}
-        <div class="border-t border-slate-100 pt-3 mt-3">
-            <p class="text-xs text-slate-400 mb-1">Minder om fra praksis:</p>
-            <p class="text-sm text-slate-700">{{ questionnaire.q8_praksis }}</p>
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
 </div>
 
 <script>

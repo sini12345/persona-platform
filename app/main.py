@@ -15,17 +15,14 @@ from fastapi.templating import Jinja2Templates
 from app.config import PERSONA_META, BASE_DIR
 from app.database import (
     init_db, validate_group_code, create_session, end_session,
-    get_session, save_message, get_messages, save_evaluation,
-    get_all_groups, create_group, get_all_sessions, get_session_with_messages,
-    get_feedback, mark_feedback_read,
-    save_questionnaire, get_questionnaire,
+    get_session, save_message, get_messages,
+    get_all_groups, create_group, get_all_sessions,
 )
 from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
 )
-from app.claude_client import stream_response, strip_indre_tags, generate_evaluation
+from app.claude_client import stream_response, strip_indre_tags
 from app.auth import get_group_id, get_group_name, require_admin, admin_cookie_value
-from app.feedback import generate_feedback
 
 
 # --- Startup ---
@@ -334,16 +331,16 @@ async def send_message(session_id: str, body: MessageRequest):
 
 @app.post("/sessions/{session_id}/end")
 async def end_session_route(request: Request, session_id: str):
-    """Student manually ends the conversation → questionnaire → feedback."""
+    """Student manually ends the conversation → conversation review."""
     await end_session(session_id, ended_by="student")
-    return RedirectResponse(url=f"/sessions/{session_id}/questionnaire", status_code=303)
+    return RedirectResponse(url=f"/sessions/{session_id}/context", status_code=303)
 
 
-# --- Context / Post-conversation ---
+# --- Conversation review / Post-conversation ---
 
 @app.get("/sessions/{session_id}/context", response_class=HTMLResponse)
 async def context_page(request: Request, session_id: str):
-    """Show context elements after conversation."""
+    """Show the full conversation with the persona's inner thoughts."""
     session = await get_session(session_id)
     if not session:
         return RedirectResponse(url="/personas", status_code=303)
@@ -351,22 +348,15 @@ async def context_page(request: Request, session_id: str):
     persona_id = session["persona_id"]
     scenario_number = session["scenario_number"]
 
-    briefing_data = get_briefing(persona_id, scenario_number)
     scenarios = parse_scenarios(persona_id)
     scenario = scenarios.get(scenario_number, {})
 
-    # Check if evaluation already exists
-    evaluation_html = ""
-    if session.get("evaluation"):
-        evaluation_html = md_to_html(session["evaluation"])
-
-    # Build message list with parsed indre content for Samtale tab
+    # Build message list with parsed indre content
     db_messages = await get_messages(session_id)
     display_messages = []
     for msg in db_messages:
         entry = {"role": msg["role"], "content": msg["content"]}
         if msg["role"] == "assistant":
-            # Extract indre content
             indre_match = re.search(r"<indre>(.*?)</indre>", msg["content"], re.DOTALL)
             entry["indre_content"] = indre_match.group(1).strip() if indre_match else ""
             entry["visible_content"] = msg["visible_content"] or strip_indre_tags(msg["content"])
@@ -378,8 +368,6 @@ async def context_page(request: Request, session_id: str):
         "persona_id": persona_id,
         "session_id": session_id,
         "scenario_title": scenario.get("title", ""),
-        "context_html": md_to_html(briefing_data["context"]),
-        "evaluation_html": evaluation_html,
         "messages": display_messages,
     })
 
@@ -446,7 +434,7 @@ async def admin_create_group(request: Request, name: str = Form(...), code: str 
 
 @app.get("/admin/sessions/{session_id}", response_class=HTMLResponse)
 async def admin_view_session(request: Request, session_id: str):
-    """View a specific conversation with all messages + questionnaire data."""
+    """View a specific conversation with all messages."""
     if not require_admin(request):
         return RedirectResponse(url="/admin", status_code=303)
 
@@ -469,162 +457,15 @@ async def admin_view_session(request: Request, session_id: str):
 
     persona_name = PERSONA_META.get(session["persona_id"], {}).get("name", session["persona_id"])
 
-    # Get questionnaire data if available
-    questionnaire = await get_questionnaire(session_id)
-
     response = templates.TemplateResponse("admin_session.html", {
         "request": request,
         "session": session,
         "messages": display_messages,
         "persona_meta": PERSONA_META,
         "persona_name": persona_name,
-        "questionnaire": questionnaire,
     })
     response.set_cookie("is_admin", admin_cookie_value(), max_age=86400, httponly=True, samesite="lax")
     return response
-
-
-# --- Evaluation ---
-
-@app.post("/sessions/{session_id}/evaluate", response_class=HTMLResponse)
-async def evaluate_session(request: Request, session_id: str):
-    """Generate evaluation for a session. Returns HTML fragment."""
-    session = await get_session(session_id)
-    if not session:
-        return HTMLResponse('<p class="text-red-500">Session ikke fundet.</p>', status_code=404)
-
-    # Return existing evaluation if already generated
-    if session.get("evaluation"):
-        return HTMLResponse(
-            f'<div class="prose prose-sm prose-slate max-w-none">{md_to_html(session["evaluation"])}</div>'
-        )
-
-    persona_id = session["persona_id"]
-    scenario_number = session["scenario_number"]
-    mission = session["mission"]
-
-    # Get persona name and scenario title
-    persona_name = PERSONA_META.get(persona_id, {}).get("name", persona_id)
-    scenarios = parse_scenarios(persona_id)
-    scenario_name = scenarios.get(scenario_number, {}).get("title", f"Scenario {scenario_number}")
-
-    # Get mission text
-    mission_text = "Åben dialog"
-    if mission:
-        missions = get_missions(persona_id, scenario_number)
-        for m in missions:
-            if m["id"] == mission:
-                mission_text = f"Opgave {m['id']}: {m['text']}"
-                break
-
-    # Get full conversation (including <indre> tags)
-    messages = await get_messages(session_id)
-    conversation = [{"role": msg["role"], "content": msg["content"]} for msg in messages]
-
-    if not conversation:
-        return HTMLResponse(
-            '<p class="text-slate-500 italic">Ingen beskeder i samtalen at evaluere.</p>'
-        )
-
-    try:
-        evaluation = await generate_evaluation(
-            persona_name=persona_name,
-            scenario_name=scenario_name,
-            mission_text=mission_text,
-            messages=conversation,
-        )
-        await save_evaluation(session_id, evaluation)
-        return HTMLResponse(
-            f'<div class="prose prose-sm prose-slate max-w-none">{md_to_html(evaluation)}</div>'
-        )
-    except Exception as e:
-        return HTMLResponse(
-            f'<p class="text-red-500">Kunne ikke generere feedback: {str(e)}</p>',
-            status_code=500,
-        )
-
-
-# --- Questionnaire ---
-
-@app.get("/sessions/{session_id}/questionnaire", response_class=HTMLResponse)
-async def questionnaire_page(request: Request, session_id: str):
-    """Show post-conversation questionnaire."""
-    session = await get_session(session_id)
-    if not session:
-        return RedirectResponse(url="/personas", status_code=303)
-
-    # Skip if already answered — go straight to feedback
-    existing = await get_questionnaire(session_id)
-    if existing:
-        return RedirectResponse(url=f"/sessions/{session_id}/feedback", status_code=303)
-
-    persona_id = session["persona_id"]
-    return templates.TemplateResponse("questionnaire.html", {
-        "request": request,
-        "session_id": session_id,
-        "persona": PERSONA_META[persona_id],
-    })
-
-
-@app.post("/sessions/{session_id}/questionnaire")
-async def submit_questionnaire(request: Request, session_id: str):
-    """Save questionnaire and redirect to feedback."""
-    session = await get_session(session_id)
-    if not session:
-        return RedirectResponse(url="/personas", status_code=303)
-
-    form = await request.form()
-
-    def likert(key):
-        """Parse a 1–5 Likert value; return None if missing/out of range
-        so it satisfies the DB CHECK constraint instead of crashing."""
-        try:
-            n = int(form.get(key, ""))
-        except (TypeError, ValueError):
-            return None
-        return n if 1 <= n <= 5 else None
-
-    data = {
-        "q1": likert("q1"),
-        "q2": likert("q2"),
-        "q3": likert("q3"),
-        "q4": likert("q4"),
-        "q5": likert("q5"),
-        "q6": str(form.get("q6", ""))[:500],
-        "q7": str(form.get("q7", ""))[:500],
-        "q8": str(form.get("q8", ""))[:500],
-    }
-    await save_questionnaire(session_id, data)
-    return RedirectResponse(url=f"/sessions/{session_id}/feedback", status_code=303)
-
-
-# --- Feedback ---
-
-@app.get("/sessions/{session_id}/feedback", response_class=HTMLResponse)
-async def feedback_page(request: Request, session_id: str):
-    """Generate and display feedback for a session."""
-    session = await get_session(session_id)
-    if not session:
-        return RedirectResponse(url="/personas", status_code=303)
-
-    # Mark feedback as read
-    await mark_feedback_read(session_id)
-
-    try:
-        # Generate feedback (or get existing)
-        feedback_text = await generate_feedback(session_id)
-        feedback_html = md_to_html(feedback_text)
-    except Exception as e:
-        feedback_html = f'<p class="text-red-500">Kunne ikke generere feedback: {str(e)}</p>'
-
-    persona_id = session["persona_id"]
-
-    return templates.TemplateResponse("feedback.html", {
-        "request": request,
-        "session_id": session_id,
-        "persona": PERSONA_META[persona_id],
-        "feedback_html": feedback_html,
-    })
 
 
 # --- Health check ---

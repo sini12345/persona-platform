@@ -1,99 +1,51 @@
 {% extends "base.html" %}
-{% block title %}Kontekst — {{ persona.name }}{% endblock %}
+{% block title %}Samtale — {{ persona.name }}{% endblock %}
 
 {% block body %}
 <div class="max-w-2xl mx-auto p-6">
-    <div class="mb-6">
-        <div class="flex items-center gap-2 text-sm text-slate-400 mb-2">
-            <span>{{ persona.icon }} {{ persona.name }}</span>
-            <span>·</span>
-            <span>{{ scenario_title }}</span>
-        </div>
-        <h1 class="text-xl font-semibold text-slate-900">Kontekst og baggrund</h1>
-        <p class="text-sm text-slate-500 mt-1">Perspektiver fra forskning og praksis der kan informere din refleksion</p>
-    </div>
-
-    <!-- Tab navigation -->
-    <div class="flex border-b border-slate-200 mb-6">
-        <button onclick="showTab('historie')" id="tab-historie" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-slate-800 text-slate-800">
-            Historie
-        </button>
-        <button onclick="showTab('system')" id="tab-system" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
-            Systemet bag
-        </button>
-        <button onclick="showTab('kilder')" id="tab-kilder" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
-            Kilder
-        </button>
-        <button onclick="showTab('samtale')" id="tab-samtale" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
-            Samtale
-        </button>
-        <button onclick="showTab('feedback')" id="tab-feedback" class="tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-600">
-            Feedback
-        </button>
-    </div>
-
-    <!-- Tab content -->
-    <div id="content-historie" class="tab-content">
-        <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
-            {{ context_html | safe }}
-        </div>
-    </div>
-    <div id="content-system" class="tab-content hidden">
-        <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
-            <p class="text-slate-500 italic">Systemkontekst vil blive vist her.</p>
-        </div>
-    </div>
-    <div id="content-kilder" class="tab-content hidden">
-        <div class="bg-white rounded-xl border border-slate-200 p-6 prose prose-sm prose-slate max-w-none">
-            <p class="text-slate-500 italic">Kildeliste vil blive vist her.</p>
-        </div>
-    </div>
-    <div id="content-samtale" class="tab-content hidden">
-        <div class="bg-white rounded-xl border border-slate-200 p-6">
-            <p class="text-sm text-slate-500 mb-4">Din samtale med {{ persona.name }} — inklusiv personaens indre tanker, som du ikke kunne se under samtalen.</p>
-            <div class="space-y-4">
-                {% for msg in messages %}
-                    {% if msg.role == "user" %}
-                        <div class="flex justify-end">
-                            <div class="chat-bubble-user px-4 py-3 max-w-[85%]">
-                                <p class="text-sm text-slate-700">{{ msg.content }}</p>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="flex justify-start">
-                            <div class="max-w-[85%] space-y-2">
-                                {% if msg.indre_content %}
-                                    <div class="bg-slate-100 border-l-2 border-slate-300 rounded-lg px-4 py-3">
-                                        <p class="text-xs font-medium text-slate-400 mb-1">{{ persona.name }}s indre tanker</p>
-                                        <p class="text-sm text-slate-500 italic">{{ msg.indre_content }}</p>
-                                    </div>
-                                {% endif %}
-                                <div class="chat-bubble-persona px-4 py-3">
-                                    <p class="text-sm">{{ msg.visible_content }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+    <div class="mb-6 flex items-start justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2 text-sm text-slate-400 mb-2">
+                <span>{{ persona.icon }} {{ persona.name }}</span>
+                <span>·</span>
+                <span>{{ scenario_title }}</span>
             </div>
+            <h1 class="text-xl font-semibold text-slate-900">Samtalen</h1>
+            <p class="text-sm text-slate-500 mt-1">Inklusiv {{ persona.name }}s indre tanker, som du ikke kunne se undervejs</p>
         </div>
+        <button onclick="exportConversation()"
+            class="shrink-0 px-4 py-2.5 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors">
+            Eksportér samtale
+        </button>
     </div>
-    <div id="content-feedback" class="tab-content hidden">
-        <div class="bg-white rounded-xl border border-slate-200 p-6">
-            {% if evaluation_html %}
-                <div class="prose prose-sm prose-slate max-w-none">
-                    {{ evaluation_html | safe }}
-                </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <div class="space-y-4">
+            {% for msg in messages %}
+                {% if msg.role == "user" %}
+                    <div class="flex justify-end">
+                        <div class="chat-bubble-user px-4 py-3 max-w-[85%]">
+                            <p class="text-sm text-slate-700">{{ msg.content }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex justify-start">
+                        <div class="max-w-[85%] space-y-2">
+                            {% if msg.indre_content %}
+                                <div class="bg-slate-100 border-l-2 border-slate-300 rounded-lg px-4 py-3">
+                                    <p class="text-xs font-medium text-slate-400 mb-1">{{ persona.name }}s indre tanker</p>
+                                    <p class="text-sm text-slate-500 italic">{{ msg.indre_content }}</p>
+                                </div>
+                            {% endif %}
+                            <div class="chat-bubble-persona px-4 py-3">
+                                <p class="text-sm">{{ msg.visible_content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             {% else %}
-                <div id="feedback-container">
-                    <p class="text-slate-600 mb-4">Få personlig feedback på din samtale baseret på konkrete øjeblikke fra dialogen.</p>
-                    <a href="/sessions/{{ session_id }}/questionnaire"
-                        class="inline-block px-5 py-2.5 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors"
-                    >
-                        Evaluer samtalen og se feedback
-                    </a>
-                </div>
-            {% endif %}
+                <p class="text-sm text-slate-400 text-center py-8">Ingen beskeder i samtalen.</p>
+            {% endfor %}
         </div>
     </div>
 
@@ -105,36 +57,41 @@
     </div>
 </div>
 
+<script id="convo-data" type="application/json">{{ messages | tojson }}</script>
 <script>
-    function showTab(name) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('.tab-btn').forEach(el => {
-            el.classList.remove('border-slate-800', 'text-slate-800');
-            el.classList.add('border-transparent', 'text-slate-400');
-        });
-        document.getElementById('content-' + name).classList.remove('hidden');
-        const btn = document.getElementById('tab-' + name);
-        btn.classList.remove('border-transparent', 'text-slate-400');
-        btn.classList.add('border-slate-800', 'text-slate-800');
-    }
+    const PERSONA_NAME = {{ persona.name | tojson }};
+    const SCENARIO_TITLE = {{ scenario_title | tojson }};
 
-    async function requestFeedback() {
-        const btn = document.getElementById('feedback-btn');
-        const container = document.getElementById('feedback-container');
+    function exportConversation() {
+        const messages = JSON.parse(document.getElementById('convo-data').textContent);
+        const lines = [];
+        lines.push(`Samtale med ${PERSONA_NAME}` + (SCENARIO_TITLE ? ` — ${SCENARIO_TITLE}` : ''));
+        lines.push(`Eksporteret ${new Date().toLocaleString('da-DK')}`);
+        lines.push('');
+        lines.push('='.repeat(50));
+        lines.push('');
 
-        // Show spinner
-        btn.disabled = true;
-        btn.innerHTML = '<span class="inline-flex items-center gap-2"><svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Genererer feedback...</span>';
-
-        try {
-            const res = await fetch('/sessions/{{ session_id }}/evaluate', {
-                method: 'POST',
-            });
-            const html = await res.text();
-            container.innerHTML = html;
-        } catch (err) {
-            container.innerHTML = '<p class="text-red-500">Noget gik galt. Prøv igen.</p>';
+        for (const msg of messages) {
+            if (msg.role === 'user') {
+                lines.push(`Studerende: ${msg.content}`);
+            } else {
+                if (msg.indre_content) {
+                    lines.push(`${PERSONA_NAME} (indre tanker): ${msg.indre_content}`);
+                }
+                lines.push(`${PERSONA_NAME}: ${msg.visible_content || ''}`);
+            }
+            lines.push('');
         }
+
+        const blob = new Blob([lines.join('\n')], {type: 'text/plain;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `samtale-${PERSONA_NAME.toLowerCase()}-{{ session_id }}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 </script>
 {% endblock %}
