@@ -1,7 +1,18 @@
 """Simple group-code authentication."""
+import hashlib
+import hmac
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from app.config import ADMIN_PASSWORD
+from app.config import ADMIN_PASSWORD, SESSION_SECRET
+
+
+def admin_cookie_value() -> str:
+    """Derive an opaque admin session token from the password + secret.
+
+    Used instead of a guessable 'true' flag so the admin cookie cannot be
+    forged by simply setting is_admin=true in the browser.
+    """
+    return hashlib.sha256(f"{ADMIN_PASSWORD}:{SESSION_SECRET}".encode()).hexdigest()
 
 
 def get_group_id(request: Request) -> str | None:
@@ -23,7 +34,8 @@ def require_admin(request: Request) -> bool:
     """Check admin password from query param or cookie."""
     # Check query param first (for initial login)
     pwd = request.query_params.get("pwd", "")
-    if pwd == ADMIN_PASSWORD:
+    if pwd and hmac.compare_digest(pwd, ADMIN_PASSWORD):
         return True
-    # Check cookie
-    return request.cookies.get("is_admin") == "true"
+    # Check signed admin cookie
+    cookie = request.cookies.get("is_admin", "")
+    return bool(cookie) and hmac.compare_digest(cookie, admin_cookie_value())

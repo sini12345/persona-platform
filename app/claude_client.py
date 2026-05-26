@@ -47,6 +47,18 @@ def strip_indre_tags(text: str) -> str:
     return re.sub(r"<indre>.*?</indre>\s*", "", text, flags=re.DOTALL).strip()
 
 
+def extract_text(response) -> str:
+    """Concatenate all text blocks from a Claude message response.
+
+    Safer than response.content[0].text, which assumes the first block is
+    text — that is not guaranteed for every response shape.
+    """
+    return "".join(
+        block.text for block in response.content
+        if getattr(block, "type", None) == "text"
+    )
+
+
 async def stream_response(
     system_prompt: str,
     conversation_history: list[dict],
@@ -182,7 +194,7 @@ async def generate_evaluation(
         messages=[{"role": "user", "content": full_prompt}],
     )
 
-    return response.content[0].text
+    return extract_text(response)
 
 
 def sync_response(system_prompt: str, conversation_history: list[dict]) -> dict:
@@ -199,7 +211,7 @@ def sync_response(system_prompt: str, conversation_history: list[dict]) -> dict:
         messages=messages,
     )
 
-    full_content = "<indre>" + response.content[0].text
+    full_content = "<indre>" + extract_text(response)
     visible_content = strip_indre_tags(full_content)
 
     return {

@@ -5,8 +5,8 @@ import re
 from pathlib import Path
 from app.config import CLAUDE_MODEL, MAX_TOKENS, BASE_DIR, PERSONA_META
 from app.database import get_session, get_messages, get_feedback, save_feedback
-from app.prompt_assembler import parse_scenarios, get_briefing
-from app.claude_client import get_client
+from app.prompt_assembler import parse_scenarios, get_missions
+from app.claude_client import get_client, extract_text
 
 
 def extract_indre_tags(content: str) -> str:
@@ -73,18 +73,19 @@ async def build_feedback_prompt(session_id: str) -> str:
     scenario = scenarios.get(scenario_number, {})
     scenario_name = scenario.get("title", f"Scenario {scenario_number}")
 
-    # Read briefing for context
-    briefing_data = get_briefing(persona_id, scenario_number)
-    persona_context = briefing_data.get("persona_context", "")  # May be empty
+    # Use the scenario situation as context for the feedback prompt
+    persona_context = scenario.get("situation", "")
 
     # Determine institution type from persona context
     institution_type = persona_meta.get("role", "socialpædagogisk praksis")
 
-    # Build mission text
+    # Build mission text from the actual mission content (not just the ID)
     mission_text = "Åben dialog"
     if mission:
-        # Mission is just the mission ID (A/B/C), we'd need the full text from missions
-        mission_text = f"Mission {mission}"
+        for m in get_missions(persona_id, scenario_number):
+            if m["id"] == mission:
+                mission_text = f"Opgave {m['id']}: {m['text']}"
+                break
 
     # Reconstruct conversation with indre tags
     exchanges = await reconstruct_conversation(session_id)
@@ -173,7 +174,7 @@ async def generate_feedback(session_id: str) -> str:
         messages=[{"role": "user", "content": prompt}],
     )
 
-    feedback_text = response.content[0].text
+    feedback_text = extract_text(response)
 
     # Save to database
     await save_feedback(session_id, feedback_text, status="generated")
