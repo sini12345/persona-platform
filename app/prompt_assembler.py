@@ -99,11 +99,16 @@ def derive_scenario_goals(scenario: dict, persona_id: str) -> str:
     situation = scenario.get("situation", "")
     dynamik = scenario.get("dynamik", "")
 
-    # Build a contextual goal from the situation
-    # This is deliberately general — the system prompt's BDI section
-    # provides the strategic framework, and the scenario situation
-    # gives the specific context. Together they generate realistic behavior.
-    return f"Situationen: {situation}\n\nReager ud fra din personlighed og dine grundlæggende behov. Forfølg det der er vigtigst for dig i denne situation."
+    # The system prompt's BDI section provides the strategic framework; the
+    # scenario situation and dynamik give the specific context that steers how
+    # the three axes move during this particular conversation.
+    parts = [
+        f"Situationen: {situation}",
+        "Reager ud fra din personlighed og dine grundlæggende behov. Forfølg det der er vigtigst for dig i denne situation.",
+    ]
+    if dynamik:
+        parts.append(f"Sådan bevæger dine tre akser sig i netop denne samtale:\n{dynamik}")
+    return "\n\n".join(parts)
 
 
 def derive_afslutningstype(scenario: dict) -> str:
