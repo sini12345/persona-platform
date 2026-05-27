@@ -11,6 +11,7 @@ Trafikselskabet
 Til: Ali ███████
 Dato: 8. maj 2026
 Sagsnr.: KA-2026-118042
+Kontrolafgiftsnr.: 70 41 80 42-6
 
 ### Kontrolafgift — manglende gyldig rejsehjemmel
 
