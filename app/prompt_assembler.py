@@ -213,6 +213,14 @@ def get_briefing(persona_id: str, scenario_number: int) -> dict:
             context = parts[1].strip()
             break
 
+    # Drop internal scaffolding (file title, "## BRIEFING"-markør, hr) so the
+    # student only sees real content. The first ### heading marks where it starts.
+    lines = briefing.splitlines()
+    for i, line in enumerate(lines):
+        if line.startswith("### "):
+            briefing = "\n".join(lines[i:]).strip()
+            break
+
     return {"briefing": briefing, "context": context}
 
 
