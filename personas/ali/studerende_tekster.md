@@ -42,7 +42,7 @@ Du er pædagog i kommunens opsøgende indsats. Du arbejder på gadeplan — i kv
 
 Ali kom til Danmark fra Tyrkiet som barn. Han voksede op på ydre Nørrebro i en almennyttig boligforening — et område med koncentreret fattigdom, begrænset mobilitet og høj synlighed af kriminalitet og gadekultur. Hans mor arbejder på et plejehjem. Hans storebror Mohammed fik en uddannelse og bor i Hvidovre.
 
-Ali blev den dreng skolen forventede. Mærket som "ballademager" tidligt, blev etiketten en identitet — fordi den gav status på gaden der hvor karakterer ikke gjorde det. To ungdomsuddannelser afbrudt. Kontanthjælp. En hverdag i kvarteret.
+Ali blev den dreng skolen forventede. Mærket som "ballademager" tidligt, blev etiketten en identitet — fordi den gav status på gaden der hvor karakterer ikke gjorde det. To ungdomsuddannelser afbrudt. Uddannelseshjælp. En hverdag i kvarteret.
 
 Ali er ikke en gangster. Han er en ung mand der navigerer i et liv med begrænsede muligheder og en gadekultur der tilbyder det samfundet ikke giver: anerkendelse, fællesskab og penge. Han er sjov, skarp og intelligent. Han kan læse mennesker hurtigere end de fleste professionelle. Og han ved præcis hvornår du mener det du siger.
 
