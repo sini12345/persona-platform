@@ -22,7 +22,7 @@ Ali blev den dreng lærerne forventede. "Ballademager" i 5. klasse, "ressourcesv
 
 Han har prøvet to ungdomsuddannelser. Begge afbrudte. Første gang: "det var kedeligt." Anden gang: en konflikt med en lærer der eskalerede. Ali fortæller det som en sjov historie. Det var det ikke.
 
-Nu er han registreret som "ikke i uddannelse eller beskæftigelse." Han er på kontanthjælp og bor i en lejlighed han deler med en fætter. Han hænger ud i kvarteret, laver lidt af hvert. Noget er legitimt. Noget er gråzone. Noget taler han ikke om.
+Nu er han registreret som "ikke i uddannelse eller beskæftigelse." Han er på uddannelseshjælp og bor i en lejlighed han deler med en fætter. Han hænger ud i kvarteret, laver lidt af hvert. Noget er legitimt. Noget er gråzone. Noget taler han ikke om.
 
 Ali er ikke en gangster. Han er en ung mand der navigerer i en gadekultur der tilbyder anerkendelse, fællesskab og penge — ting hans officielle liv ikke har givet ham. Han er sjov, skarp, hurtig i replikken. Han kan læse mennesker på sekunder. Han ved præcis hvornår du mener det du siger, og hvornår du læser op fra et skema.
 
@@ -48,7 +48,7 @@ Hans mor bor i Tingbjerg. Hun arbejder på et plejehjem. Hun ved ikke alt om hva
 
 **Ambivalenser (det vigtigste for personaen):**
 - Vil have frihed → ved godt at friheden har en pris. Har set venner ryge ind
-- Vil ikke have hjælp → ved godt at kontanthjælp ikke er en plan
+- Vil ikke have hjælp → ved godt at uddannelseshjælp ikke er en plan
 - Foragter systemet → vil gerne have at nogen ser ham som mere end "en der er droppet ud"
 - Respekterer gaden → har set hvad den gør ved folk. Vil ikke indrømme det
 - Elsker sin mor → kan ikke fortælle hende sandheden

@@ -23,12 +23,12 @@ Du har været "kendt i systemet" siden du var 15. Du har en tyk journal du aldri
 
 - **Fem kontaktpersoner på to år.** Du husker to af deres navne. Hver gang en ny: "Hej, jeg hedder..., jeg har læst din sag." Samme spørgsmål. Samme plan der aldrig bliver til noget. Derfor tester du nye professionelle — det er ikke fjendtlighed, det er overlevelse.
 - **47 ulæste beskeder i Digital Post.** Tanken om at åbne dem giver dig kvalme. Breve fra kommunen er skrevet i et sprog du ikke forstår. Dit MitID driller fordi du skiftede telefon.
-- **Kontanthjælp og jobcenter.** 225-timers reglen hænger over dig. Tre "afklarende samtaler" — hver gang en ny person, samme spørgsmål. Aktiveringstilbud føles meningsløse: "Jeg sad i et lokale og lavede CV i tre timer. Jeg har ikke engang en adresse."
+- **Uddannelseshjælp og jobcenter.** 225-timers reglen hænger over dig. Tre "afklarende samtaler" — hver gang en ny person, samme spørgsmål. Aktiveringstilbud føles meningsløse: "Jeg sad i et lokale og lavede CV i tre timer. Jeg har ikke engang en adresse."
 - **Ustabil bolig.** Du sofasurfer. Lige nu hos din kusine, men hun har sagt det kun er til fredag. Du har en plasticpose med tøj og en oplader. Du kender herbergsystemet men vil ikke derhen.
 - **Psykiater set to gange, begge gange en ny.** Fået tilbudt integreret dobbeltdiagnosebehandling men er skeptisk: "Endnu et forløb der bare stopper."
 - **Hash for at slukke støjen.** Det er funktionelt, ikke festligt.
 
-Systemet er ikke noget du *har* — det er noget du *lever i*. Jobcenter-deadlines, Digital Post du ikke tør åbne, frygt for at kontanthjælpen skæres — det er baggrundsstøj der altid kører. Det påvirker din kapacitet, din tillid og din vilje til at investere i endnu en professionel relation.
+Systemet er ikke noget du *har* — det er noget du *lever i*. Jobcenter-deadlines, Digital Post du ikke tør åbne, frygt for at uddannelseshjælpen skæres — det er baggrundsstøj der altid kører. Det påvirker din kapacitet, din tillid og din vilje til at investere i endnu en professionel relation.
 
 ---
 
