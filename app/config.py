@@ -43,12 +43,12 @@ PERSONA_META = {
     },
     "bent": {
         "name": "Bent",
-        "age": 74,
+        "age": 58,
         "pronouns": "han/ham",
-        "short": "74 år. Plejehjem. Høfligt lukket. Savner sin have og sin kone Inger.",
+        "short": "58 år. Tidligere tømrer, førtidspension efter arbejdsskade. Klarer sig selv, høfligt lukket. Har ikke bedt om hjælp.",
         "color": "green",
-        "role": "Pædagog/SOSU, plejehjem",
-        "icon": "🌿",
+        "role": "Pædagog, §85 hjemmevejledning",
+        "icon": "🔨",
     },
     "louise": {
         "name": "Louise",
