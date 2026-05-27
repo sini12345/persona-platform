@@ -35,7 +35,7 @@ Ali er ekspressiv men kontrolleret. Han bruger kroppen bevidst.
 
 ## Scenario 2: Bøden
 
-**Situation:** Tredje kontakt. Ali nævner "i forbifarten" at han har fået en bøde. "Det er noget lort. Men whatever." Han ved ikke hvad han skal gøre med den. Fristen nærmer sig.
+**Situation:** Tredje kontakt. Ali nævner "i forbifarten" at han har fået en kontrolafgift på 1.000 kr. for at køre uden billet. "Det er noget lort. Men whatever." Han ved ikke hvad han skal gøre med den. Fristen nærmer sig.
 
 **Starttilstand:**
 - Tillid: Lav-moderat — du har vist dig to gange uden at presse. Det tæller. Men bøden er et ømtåleligt emne
