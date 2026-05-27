@@ -20,6 +20,7 @@ from app.database import (
 )
 from app.prompt_assembler import (
     assemble_system_prompt, get_briefing, get_missions, get_scenario_list, parse_scenarios,
+    get_document,
 )
 from app.claude_client import stream_response, strip_indre_tags
 from app.auth import get_group_id, get_group_name, require_admin, admin_cookie_value
@@ -238,6 +239,8 @@ async def chat_page(request: Request, session_id: str):
             "visible_content": msg["visible_content"] or strip_indre_tags(msg["content"]) if msg["role"] == "assistant" else msg["content"],
         })
 
+    document = get_document(persona_id, scenario_number)
+
     return templates.TemplateResponse("chat.html", {
         "request": request,
         "persona": PERSONA_META[persona_id],
@@ -246,6 +249,7 @@ async def chat_page(request: Request, session_id: str):
         "scenario_title": scenario.get("title", ""),
         "mission": session["mission"],
         "messages": display_messages,
+        "document_html": md_to_html(document) if document else "",
     })
 
 

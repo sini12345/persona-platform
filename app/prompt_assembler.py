@@ -224,6 +224,25 @@ def get_briefing(persona_id: str, scenario_number: int) -> dict:
     return {"briefing": briefing, "context": context}
 
 
+def get_document(persona_id: str, scenario_number: int) -> str:
+    """
+    Return the optional in-scene document (e.g. a letter the persona shows the
+    student) for a scenario, or "" if there is none. Stored in dokumenter.md,
+    one block per scenario: "## Scenario N\n<markdown>".
+    """
+    path = PERSONAS_DIR / persona_id / "dokumenter.md"
+    if not path.exists():
+        return ""
+    content = path.read_text(encoding="utf-8")
+    blocks = re.split(r"(?=^## Scenario \d+)", content, flags=re.MULTILINE)
+    for block in blocks:
+        match = re.match(r"## Scenario (\d+)", block)
+        if match and int(match.group(1)) == scenario_number:
+            parts = block.split("\n", 1)
+            return parts[1].strip() if len(parts) > 1 else ""
+    return ""
+
+
 def get_missions(persona_id: str, scenario_number: int) -> list[dict]:
     """
     Get the three missions for a scenario.
