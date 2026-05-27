@@ -12,7 +12,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from app.config import PERSONA_META, BASE_DIR
+from app.config import PERSONA_META, BASE_DIR, CLAUDE_MODEL
 from app.database import (
     init_db, validate_group_code, create_session, end_session,
     get_session, save_message, get_messages,
@@ -472,4 +472,4 @@ async def admin_view_session(request: Request, session_id: str):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    return {"status": "ok", "model": CLAUDE_MODEL}
