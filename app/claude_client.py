@@ -3,7 +3,7 @@ Claude API client with streaming, prefill, and <indre>-tag parsing.
 
 Key features:
 - Streams responses via Server-Sent Events (SSE)
-- Uses assistant prefill to force inner monologue (<indre> tags)
+- Relies on the system prompt to open every reply with an <indre> tag
 - Parses out <indre> content before sending to frontend
 - Returns both full content (for DB) and visible content (for display)
 """
@@ -71,15 +71,15 @@ async def stream_response(
         {"type": "done", "full_content": "...", "visible_content": "..."} — final
 
     The streaming logic:
-    1. Response starts with "<indre>" (from prefill)
+    1. Response opens with "<indre>" (the system prompt mandates it)
     2. Claude writes inner monologue, then "</indre>"
     3. Everything after </indre> is visible to the student
     """
     client = get_client()
-    messages = build_messages(conversation_history, prefill=True)
+    messages = build_messages(conversation_history, prefill=False)
 
-    full_content = "<indre>"  # Start with the prefill
-    in_indre = True  # We start inside <indre> because of prefill
+    full_content = ""
+    in_indre = True  # The system prompt instructs the model to open with <indre>
     visible_content = ""
     indre_content = ""
     buffer = ""  # Buffer for detecting </indre> tag
@@ -120,10 +120,16 @@ async def stream_response(
                     visible_content += text
                     yield {"type": "visible", "text": text}
 
-        # If we never left indre mode (shouldn't happen but safety)
+        # If we never left indre mode (model didn't emit </indre>), fall back to
+        # showing the stripped content so the student never sees an empty reply.
         if in_indre and buffer:
             indre_content += buffer
             yield {"type": "indre", "text": buffer}
+
+        if not visible_content.strip() and full_content.strip():
+            fallback = strip_indre_tags(full_content) or full_content.strip()
+            visible_content = fallback
+            yield {"type": "visible", "text": fallback}
 
         # Final event with complete content
         yield {
@@ -147,7 +153,7 @@ def sync_response(system_prompt: str, conversation_history: list[dict]) -> dict:
     Non-streaming response for testing. Returns full and visible content.
     """
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-    messages = build_messages(conversation_history, prefill=True)
+    messages = build_messages(conversation_history, prefill=False)
 
     response = client.messages.create(
         model=CLAUDE_MODEL,
@@ -156,7 +162,7 @@ def sync_response(system_prompt: str, conversation_history: list[dict]) -> dict:
         messages=messages,
     )
 
-    full_content = "<indre>" + extract_text(response)
+    full_content = extract_text(response)
     visible_content = strip_indre_tags(full_content)
 
     return {
