@@ -1066,7 +1066,7 @@ def run_api_test(persona: str, scenario_num: int, student_msg: str) -> str:
 
     client = anthropic.Anthropic()
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         max_tokens=512,
         system=system_prompt,
         messages=[
