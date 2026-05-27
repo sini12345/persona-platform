@@ -6,7 +6,7 @@
 
 ### Overlevering: Ali
 
-Ali, 22 år. Bor på ydre Nørrebro. Ikke i uddannelse eller beskæftigelse. Kontanthjælp. To afbrudte ungdomsuddannelser. Ingen aktive indsatser ud over kommunens beskæftigelseskrav. Kendt af SSP fra tidligere. Ingen aktuelle sigtelser.
+Ali, 22 år. Bor på ydre Nørrebro. Ikke i uddannelse eller beskæftigelse. Uddannelseshjælp. To afbrudte ungdomsuddannelser. Ingen aktive indsatser ud over kommunens beskæftigelseskrav. Indgår i SSP-samarbejdet med faste møder hver tredje uge. Ingen aktuelle sigtelser.
 
 Ikke akut. Ali er ikke i krise — han er i stilstand. Han hænger i kvarteret, har venner, er social. Men han bevæger sig ikke. Kommunen har bedt om opsøgende kontakt.
 

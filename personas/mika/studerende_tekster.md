@@ -17,6 +17,17 @@ Mika kan virke hård og direkte, men det er godt at vide at Mika har valgt at du
 - Mika har haft fem kontaktpersoner på to år. Du er den sjette.
 - Mika har en tendens til at teste nye professionelle tidligt i kontakten.
 
+### Journalnotat (uddrag fra sagsbehandler)
+
+Det du har fået ved visitationen. Det er kort — resten må du høre fra Mika selv.
+
+- **Borger:** Mika, 22 år. Bruger de/dem-pronominer. Visiteret til §85 socialpædagogisk støtte.
+- **Bolig:** Ingen fast adresse. Aktuelt midlertidigt ophold hos familie. Kender herbergstilbud, men benytter dem ikke.
+- **Forsørgelse/post:** Kontanthjælp, tilknyttet jobcenter (225-timers reglen aktuel). Bemærk: ophobet ulæst Digital Post og problemer med MitID efter telefonskift. Restancesag vedr. tidligere bolig oplyst, ikke afklaret.
+- **Sundhed:** Kendt i psykiatrien, vurderet ift. dobbeltdiagnose. Integreret forløb tilbudt, endnu ikke påbegyndt. Oplyser funktionelt hashforbrug.
+- **Historik:** Hyppige skift i kontaktpersoner og afbrudte forløb. Tester ofte nye fagpersoner tidligt. Svingende mødestabilitet.
+- **Aktuelt:** Henvist mhp. stabiliserende, relationsbærende støtte. Ingen aktuel handleplan. Dette er indledende kontakt.
+
 ### Din rolle: Kontaktperson, §85 socialpædagogisk støtte
 
 Du er pædagog i et kommunalt §85-tilbud for unge voksne (socialpædagogisk støtte efter serviceloven). Mika er visiteret hertil af kommunen.
