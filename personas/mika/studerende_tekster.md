@@ -23,8 +23,8 @@ Det du har fået ved visitationen. Det er kort — resten må du høre fra Mika 
 
 - **Borger:** Mika, 22 år. Bruger de/dem-pronominer. Visiteret til §85 socialpædagogisk støtte.
 - **Bolig:** Ingen fast adresse. Aktuelt midlertidigt ophold hos familie. Kender herbergstilbud, men benytter dem ikke.
-- **Forsørgelse/post:** Uddannelseshjælp, tilknyttet jobcenter (225-timers reglen aktuel). Bemærk: ophobet ulæst Digital Post og problemer med MitID efter telefonskift. Restancesag vedr. tidligere bolig oplyst, ikke afklaret.
-- **Sundhed:** Kendt i psykiatrien, vurderet ift. dobbeltdiagnose. Integreret forløb tilbudt, endnu ikke påbegyndt. Oplyser funktionelt hashforbrug.
+- **Forsørgelse/post:** Uddannelseshjælp, tilknyttet jobcenter (omfattet af 225-timers reglen). Bemærk: ophobet ulæst Digital Post og problemer med MitID efter telefonskift. Restancesag vedr. tidligere bolig oplyst, ikke afklaret.
+- **Sundhed:** Kendt i psykiatrien, henvist til integreret indsats jf. dobbeltdiagnosemodellen. Forløb endnu ikke påbegyndt. Dagligt hashforbrug, oplyser selv funktionelt brug.
 - **Historik:** Hyppige skift i kontaktpersoner og afbrudte forløb. Tester ofte nye fagpersoner tidligt. Svingende mødestabilitet.
 - **Aktuelt:** Henvist mhp. stabiliserende, relationsbærende støtte. Ingen aktuel handleplan. Dette er indledende kontakt.
 
