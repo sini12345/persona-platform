@@ -29,7 +29,7 @@ PERSONA_META = {
         "pronouns": "de/dem",
         "short": "22 år. Psykisk belastning, rusmidler, ustabil bolig. Tester professionelle for ægthed.",
         "color": "purple",
-        "role": "Socialpædagog, §85 bostøtte",
+        "role": "Kontaktperson under paragraf 85",
         "icon": "🔥",
     },
     "sara": {
@@ -47,7 +47,7 @@ PERSONA_META = {
         "pronouns": "han/ham",
         "short": "58 år. Tidligere tømrer, førtidspension efter arbejdsskade. Klarer sig selv, høfligt lukket. Har ikke bedt om hjælp.",
         "color": "green",
-        "role": "Pædagog, §85 hjemmevejledning",
+        "role": "Hjemmevejleder under paragraf 85",
         "icon": "🔨",
     },
     "louise": {
@@ -74,7 +74,7 @@ PERSONA_META = {
         "pronouns": "han/ham",
         "short": "22 år. Nørrebro. Humor og gadekoder. Har ikke bedt om hjælp — du opsøger ham.",
         "color": "orange",
-        "role": "Gadeplansmedarbejder / opsøgende pædagog",
+        "role": "Gadeplansmedarbejder",
         "icon": "🌆",
     },
     "yasmin": {
