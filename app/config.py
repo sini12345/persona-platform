@@ -83,7 +83,7 @@ PERSONA_META = {
         "pronouns": "hun/hende",
         "short": "14 år. 8. klasse. Tredjegenerations-dansk. Navigerer identitet med humor og skarphed.",
         "color": "rose",
-        "role": "Skolepædagog i udskolingen",
+        "role": "Trivselsmedarbejder i udskolingen",
         "icon": "✨",
     },
 }
@@ -91,5 +91,5 @@ PERSONA_META = {
 # Kun disse personaer vises ved fremvisningen. Genaktiver de øvrige ved at
 # tilføje nøglen her (eller fjern filtreringen helt) — alle definitioner ovenfor
 # bevares, så intet er gået tabt.
-_ACTIVE_PERSONAS = {"mika", "bent", "ali"}
+_ACTIVE_PERSONAS = {"mika", "bent", "ali", "yasmin"}
 PERSONA_META = {k: v for k, v in PERSONA_META.items() if k in _ACTIVE_PERSONAS}
