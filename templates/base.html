@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Personatræning{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Static Tailwind build (regenerate: npx tailwindcss@3 -i tailwind.input.css -o static/app.css --minify) -->
+    <link rel="stylesheet" href="/static/app.css">
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/sse.js"></script>
     <style>
