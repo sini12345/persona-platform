@@ -69,7 +69,13 @@ async def login(request: Request, code: str = Form(...)):
             '<p class="text-red-500 text-sm">Ukendt holdkode. Prøv igen.</p>',
             status_code=200,
         )
-    response = RedirectResponse(url="/personas", status_code=303)
+    if request.headers.get("HX-Request"):
+        # htmx submits via fetch, som følger en 303 i baggrunden og swapper
+        # målsiden ind i fejl-div'en. HX-Redirect giver ægte navigation.
+        response = HTMLResponse("")
+        response.headers["HX-Redirect"] = "/personas"
+    else:
+        response = RedirectResponse(url="/personas", status_code=303)
     response.set_cookie("group_id", group["id"], max_age=86400 * 30, httponly=True, samesite="lax")
     response.set_cookie("group_name", group["name"], max_age=86400 * 30, httponly=True, samesite="lax")
     return response
