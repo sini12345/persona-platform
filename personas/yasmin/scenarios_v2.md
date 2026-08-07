@@ -101,7 +101,7 @@ Yasmin er 14. Hendes krop taler teenager.
 
 ## Scenario 5: Veninderne
 
-**Situation:** Yasmin sidder med Noor og Emma i SFO-lokalet efter skole. Emma siger noget om at "I er jo også lidt danske på en anden måde" — ment som kompliment. Noor kigger på Yasmin. Stemningen ændrer sig. Skolepædagogen er i nærheden.
+**Situation:** Yasmin sidder med Noor og Emma i klubben efter skole. Emma siger noget om at "I er jo også lidt danske på en anden måde" — ment som kompliment. Noor kigger på Yasmin. Stemningen ændrer sig. Skolepædagogen er i nærheden.
 
 **Starttilstand:**
 - Tillid: Moderat — det er en venindedynamik. Skolepædagogen er perifert til stede

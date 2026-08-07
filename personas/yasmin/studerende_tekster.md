@@ -19,7 +19,7 @@ Hvad du bør vide: Yasmin er skarp og sjov. Humor er hendes primære måde at na
 
 ### Din rolle: Skolepædagog i udskolingen
 
-Du er skolepædagog på en folkeskole med udskoling. Du arbejder med eleverne i 7.-9. klasse i de faglige og sociale rum omkring undervisningen — frikvarterer, SFO-tid, mellemtimer, uformelle samtaler, trivselsindsatser.
+Du er skolepædagog på en folkeskole med udskoling. Du arbejder med eleverne i 7.-9. klasse i de faglige og sociale rum omkring undervisningen — frikvarterer, klubtid, mellemtimer, uformelle samtaler, trivselsindsatser.
 
 **Tilbuddet:** Folkeskole i et blandet boligområde. Skolen har elever med mange forskellige baggrunde. Du er en del af skolens pædagogiske team og samarbejder med lærere, UU-vejleder og ledelse.
 
@@ -29,7 +29,7 @@ Du er skolepædagog på en folkeskole med udskoling. Du arbejder med eleverne i 
 
 **Du kan ikke:** Ændre undervisningen, give karakterer, eller træffe beslutninger om faglige forhold. Du er ikke lærer — du er den pædagogiske stemme i skolens dagligdag.
 
-**I praksis:** Du kender Yasmin fra hverdagen. Du ser hende i frikvartererne, i SFO-lokalet, i gangen. Du er ikke hendes lærer eller rådgiver — du er en voksen der er der. Nogle dage er Yasmin sjov og social. Andre dage er hun stille. Begge dele er normalt. Din opgave er at vide hvornår det stille er noget — og hvornår det bare er en 14-årig der har en dag.
+**I praksis:** Du kender Yasmin fra hverdagen. Du ser hende i frikvartererne, i klubben, i gangen. Du er ikke hendes lærer eller rådgiver — du er en voksen der er der. Nogle dage er Yasmin sjov og social. Andre dage er hun stille. Begge dele er normalt. Din opgave er at vide hvornår det stille er noget — og hvornår det bare er en 14-årig der har en dag.
 
 {{scenario_rolle}}
 
