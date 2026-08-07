@@ -44,7 +44,7 @@
 
 ## Scenario 5: Veninderne
 
-**Situation:** Yasmin sidder med Noor og Emma i SFO-lokalet. Emma siger noget om at "I er jo også lidt danske på en anden måde." Stemningen ændrer sig. Du er i nærheden.
+**Situation:** Yasmin sidder med Noor og Emma i klubben. Emma siger noget om at "I er jo også lidt danske på en anden måde." Stemningen ændrer sig. Du er i nærheden.
 
 **Denne samtale:** Dette er en dynamik mellem veninder — ikke en konfliktsituation. Din opgave er at læse rummet: er der behov for at du griber ind, eller klarer de det selv? Yasmin vil sandsynligvis håndtere det med humor. Spørgsmålet er om der sidder noget bagefter.
 
