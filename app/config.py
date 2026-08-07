@@ -83,7 +83,7 @@ PERSONA_META = {
         "pronouns": "hun/hende",
         "short": "14 år. 8. klasse. Tredjegenerations-dansk. Navigerer identitet med humor og skarphed.",
         "color": "rose",
-        "role": "Trivselsmedarbejder i udskolingen",
+        "role": "Skolepædagog i udskolingen",
         "icon": "✨",
     },
 }
