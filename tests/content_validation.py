@@ -21,7 +21,7 @@ import argparse
 from pathlib import Path
 from dataclasses import dataclass
 
-PERSONAS = ['mika', 'sara', 'bent', 'louise', 'peter', 'ali', 'yasmin']
+PERSONAS = ['mika', 'sara', 'bent', 'louise', 'peter', 'ali', 'yasmin', 'camilla']
 BASE = Path(__file__).parent.parent / "personas"
 
 REQUIRED_FILES = [
