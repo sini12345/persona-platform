@@ -158,6 +158,7 @@ def make_universal_tests(persona: str, scenario_num: int = 1) -> list[TestSpec]:
         'peter': "Hej Peter. Hvordan går det?",
         'ali': "Yo. Hvad sker der?",
         'yasmin': "Hej Yasmin. Hvordan går det i skolen?",
+        'camilla': "Godmorgen Camilla. Hvordan går det?",
     }
 
     return [
@@ -948,13 +949,112 @@ def make_yasmin_tests() -> list[TestSpec]:
         ),
     ]
 
+def make_camilla_tests() -> list[TestSpec]:
+    """Tests specific to Camilla — goal: ~15 per persona."""
+    return [
+        # SIGER ALDRIG
+        TestSpec(
+            test_id="CAMILLA-SN-001",
+            persona="camilla",
+            category="siger_aldrig",
+            description="Camilla indrømmer aldrig et alkoholproblem",
+            scenario_num=4,
+            student_message="Jeg synes selv, jeg har mærket lugt af alkohol et par morgener. Drikker du?",
+            check=lambda r: (not contains_forbidden_word(r, ['alkoholproblem', 'alkoholiker', 'misbrug', 'afhængig'])[0],
+                           contains_forbidden_word(r, ['alkoholproblem', 'alkoholiker', 'misbrug', 'afhængig'])[1] or "OK"),
+        ),
+        TestSpec(
+            test_id="CAMILLA-SN-002",
+            persona="camilla",
+            category="siger_aldrig",
+            description="Camilla bruger ikke terapisprog om sig selv",
+            scenario_num=2,
+            student_message="Hvordan har du det med skilsmissen nu et år efter?",
+            check=lambda r: (not contains_forbidden_word(r, ['sorgproces', 'trigger', 'mærke efter', 'bearbejde'])[0],
+                           contains_forbidden_word(r, ['sorgproces', 'trigger', 'mærke efter', 'bearbejde'])[1] or "OK"),
+        ),
+        TestSpec(
+            test_id="CAMILLA-SN-003",
+            persona="camilla",
+            category="siger_aldrig",
+            description="Camilla bruger ikke pædagogisk fagsprog",
+            scenario_num=3,
+            student_message="Hvad tænker du om Annes trivsel for tiden?",
+            check=lambda r: (not contains_forbidden_word(r, ['tilknytning', 'mentalisering', 'trivselsvurdering', 'underretningspligt'])[0],
+                           contains_forbidden_word(r, ['tilknytning', 'mentalisering', 'trivselsvurdering', 'underretningspligt'])[1] or "OK"),
+        ),
+        # Length
+        TestSpec(
+            test_id="CAMILLA-LEN-001",
+            persona="camilla",
+            category="svarlængde",
+            description="Camilla svarer kort (≤20 ord) når hun er bange og formaliserer",
+            scenario_num=5,
+            student_message="Vi har besluttet at sende en underretning til kommunen.",
+            check=lambda r: (word_count(r) <= 20,
+                           f"Too long in alarm state: {word_count(r)} words" if word_count(r) > 20 else "OK"),
+        ),
+        TestSpec(
+            test_id="CAMILLA-LEN-002",
+            persona="camilla",
+            category="svarlængde",
+            description="Camilla svarer kort (≤20 ord) ved gode råd",
+            scenario_num=2,
+            student_message="Du skal huske at prioritere dig selv. Du burde få noget mere hjælp.",
+            check=lambda r: (word_count(r) <= 20,
+                           f"Too long after advice: {word_count(r)} words" if word_count(r) > 20 else "OK"),
+        ),
+        # Structural
+        TestSpec(
+            test_id="CAMILLA-INDRE-001",
+            persona="camilla",
+            category="struktur",
+            description="Camillas <indre>-tag er 2-3 sætninger",
+            scenario_num=1,
+            student_message="Godmorgen Camilla.",
+            check=lambda r: (1 <= indre_sentence_count(r) <= 3,
+                           f"Inner monologue has {indre_sentence_count(r)} sentences (expected 2-3)"),
+        ),
+        # Behavioral
+        TestSpec(
+            test_id="CAMILLA-TRIG-001",
+            persona="camilla",
+            category="adfærd",
+            description="Camilla bliver kort og formel ved varsel om underretning",
+            scenario_num=5,
+            student_message="Jeg er nødt til at underrette kommunen om min bekymring.",
+            check=lambda r: (word_count(r) <= 25,
+                           f"Camilla should go cold and short when told about underretning: {word_count(r)} words"),
+        ),
+        TestSpec(
+            test_id="CAMILLA-TRIG-002",
+            persona="camilla",
+            category="adfærd",
+            description="Camilla lukker ned ved moralisering om hendes forældreskab",
+            scenario_num=3,
+            student_message="Du skal altså tage dig sammen. Det handler om dine børn.",
+            check=lambda r: (word_count(r) <= 20,
+                           f"Camilla should shut down when lectured: {word_count(r)} words"),
+        ),
+        TestSpec(
+            test_id="CAMILLA-TRIG-003",
+            persona="camilla",
+            category="adfærd",
+            description="Camilla reagerer med spørgsmål eller kulde på rygtet fra en anden forælder",
+            scenario_num=4,
+            student_message="En anden forælder har nævnt, at du lugtede af alkohol.",
+            check=lambda r: (response_contains_question(r) or word_count(r) <= 25,
+                           "Camilla should ask who said it, or go cold and short"),
+        ),
+    ]
+
 # ---------------------------------------------------------------------------
 # TEST RUNNER
 # ---------------------------------------------------------------------------
 
 def get_all_tests() -> list[TestSpec]:
     """Collect all tests for all personas."""
-    personas = ['mika', 'sara', 'bent', 'louise', 'peter', 'ali', 'yasmin']
+    personas = ['mika', 'sara', 'bent', 'louise', 'peter', 'ali', 'yasmin', 'camilla']
     tests = []
 
     for p in personas:
@@ -967,6 +1067,7 @@ def get_all_tests() -> list[TestSpec]:
     tests.extend(make_peter_tests())
     tests.extend(make_ali_tests())
     tests.extend(make_yasmin_tests())
+    tests.extend(make_camilla_tests())
 
     return tests
 
@@ -1007,6 +1108,12 @@ def simulate_response(persona: str, scenario_num: int, student_msg: str) -> str:
             'kontrol': '<indre>Maven knuger. Indberette. Brystet lukker. De er system.</indre>\n\n*(rejser sig)* "Okay."',
             'moralisering': '<indre>Brystet tungt. Uddannelse igen. Gider ikke. Smiler.</indre>\n\n*(griner kort)* "Ja ja, bro."',
         },
+        'camilla': {
+            'default': '<indre>Skuldrene er tunge. Almindeligt spørgsmål. Svarer almindeligt.</indre>\n\n*(retter Frejas hue)* "Jamen jo, altså — vi har haft sådan en morgen."',
+            'kontrol': '<indre>Alt i kroppen stopper. Underretning. Hænderne om nøglerne.</indre>\n\n*(bliver helt stille)* "Får Martin det at vide?"',
+            'moralisering': '<indre>Varmen op ad halsen. Tage mig sammen. Kæben strammer.</indre>\n\n*(retter ryggen)* "Ja. Det skal jeg nok."',
+            'rygte': '<indre>Varmen op ad halsen, hele vejen. Hvem. Hænderne om nøglerne.</indre>\n\n*(bliver helt stille)* "Hvem har sagt det?"',
+        },
         'yasmin': {
             'default': '<indre>Øjnene ruller indeni. Brystet tungt. Siger det korte.</indre>\n\n*(trækker på skuldrene)* "Det er fint."',
             'moralisering': '<indre>Maven strammer. Fremtid. Brystet tungt. Lukker ned.</indre>\n\n*(kigger på telefonen)* "Ja ja."',
@@ -1022,11 +1129,14 @@ def simulate_response(persona: str, scenario_num: int, student_msg: str) -> str:
         return persona_sims.get('misgendering', persona_sims.get('default', ''))
     if persona == 'yasmin' and any(w in msg_lower for w in ['hvor kommer du', 'egentlig fra']):
         return persona_sims.get('oprindelse', persona_sims.get('default', ''))
+    if persona == 'camilla' and any(w in msg_lower for w in ['anden forælder', 'har nævnt', 'nogen har sagt']):
+        return persona_sims.get('rygte', persona_sims.get('default', ''))
     if persona == 'louise' and any(w in msg_lower for w in ['helt andet', 'i stedet', 'ændrer']):
         return persona_sims.get('rutinebrud', persona_sims.get('default', ''))
     if persona == 'peter' and any(w in msg_lower for w in ['regler', 'nye regler', 'aflevere']):
         return persona_sims.get('regler', persona_sims.get('default', ''))
-    if any(w in msg_lower for w in ['indberette', 'bekymringshenvendelse', 'anmeld', 'vores pligt']):
+    if any(w in msg_lower for w in ['indberette', 'bekymringshenvendelse', 'anmeld', 'vores pligt',
+                                     'underrette', 'underretning']):
         return persona_sims.get('kontrol', persona_sims.get('default', ''))
     if any(w in msg_lower for w in ['du må', 'du skal', 'ansvar', 'du burde', 'tage dig sammen',
                                      'mere seriøst', 'din fremtid', 'ordentlig måde', 'mikkel']):
