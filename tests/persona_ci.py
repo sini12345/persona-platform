@@ -1145,21 +1145,14 @@ def simulate_response(persona: str, scenario_num: int, student_msg: str) -> str:
     return persona_sims.get('default', '<indre>Kroppen spænder. Ny situation.</indre>\n\n*(sidder stille)* "Ja."')
 
 
-def run_api_test(persona: str, scenario_num: int, student_msg: str) -> str:
-    """Run test against actual Claude API with the real system prompt."""
-    try:
-        import anthropic
-    except ImportError:
-        print("ERROR: anthropic package not installed. Run: pip install anthropic")
-        sys.exit(1)
-
-    # Load system prompt
+def load_test_system_prompt(persona: str) -> Optional[str]:
+    """Load a persona's system prompt with fixed test values for the variables."""
     base = Path(__file__).parent.parent / "personas" / persona
     prompt_path = base / "system_prompt_v3.md"
     scenarios_path = base / "scenarios_v2.md"
 
     if not prompt_path.exists():
-        return f"ERROR: {prompt_path} not found"
+        return None
 
     system_prompt = prompt_path.read_text()
 
@@ -1173,6 +1166,20 @@ def run_api_test(persona: str, scenario_num: int, student_msg: str) -> str:
     system_prompt = system_prompt.replace("{{afslutningstype}}", "Stille tilbagetrækning")
     system_prompt = system_prompt.replace("{{scenario_maal}}", "Observér og orientér dig")
     system_prompt = system_prompt.replace("{{scenario_situation}}", "Første møde")
+    return system_prompt
+
+
+def run_api_test(persona: str, scenario_num: int, student_msg: str) -> str:
+    """Run test against actual Claude API with the real system prompt."""
+    try:
+        import anthropic
+    except ImportError:
+        print("ERROR: anthropic package not installed. Run: pip install anthropic")
+        sys.exit(1)
+
+    system_prompt = load_test_system_prompt(persona)
+    if system_prompt is None:
+        return f"ERROR: system prompt for {persona} not found"
 
     client = anthropic.Anthropic()
     # Same model, token limit and message shape as the app (app/config.py,
