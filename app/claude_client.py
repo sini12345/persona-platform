@@ -7,10 +7,13 @@ Key features:
 - Parses out <indre> content before sending to frontend
 - Returns both full content (for DB) and visible content (for display)
 """
+import logging
 import re
 import anthropic
 from typing import AsyncGenerator
 from app.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, MAX_TOKENS
+
+logger = logging.getLogger(__name__)
 
 
 def get_client() -> anthropic.AsyncAnthropic:
@@ -42,8 +45,12 @@ def build_messages(conversation_history: list[dict], prefill: bool = True) -> li
 
 
 def strip_indre_tags(text: str) -> str:
-    """Remove <indre>...</indre> tags and their content from text."""
-    return re.sub(r"<indre>.*?</indre>\s*", "", text, flags=re.DOTALL).strip()
+    """Remove <indre>...</indre> tags and their content from text.
+
+    An <indre> that is never closed (e.g. the reply was cut off) is removed
+    through the end of the text, so the monologue can't leak.
+    """
+    return re.sub(r"<indre>.*?(?:</indre>\s*|$)", "", text, flags=re.DOTALL).strip()
 
 
 def extract_text(response) -> str:
@@ -120,16 +127,27 @@ async def stream_response(
                     visible_content += text
                     yield {"type": "visible", "text": text}
 
-        # If we never left indre mode (model didn't emit </indre>), fall back to
-        # showing the stripped content so the student never sees an empty reply.
+            final = await stream.get_final_message()
+
+        if final.stop_reason == "refusal":
+            category = getattr(getattr(final, "stop_details", None), "category", None)
+            logger.warning("Refusal from %s (category=%s)", CLAUDE_MODEL, category)
+            yield {"type": "error", "text": "Personaen kunne ikke svare på den besked. Prøv at formulere den anderledes."}
+            return
+
         if in_indre and buffer:
             indre_content += buffer
             yield {"type": "indre", "text": buffer}
 
-        if not visible_content.strip() and full_content.strip():
-            fallback = strip_indre_tags(full_content) or full_content.strip()
-            visible_content = fallback
-            yield {"type": "visible", "text": fallback}
+        # If we never left indre mode, the model either skipped <indre> (show
+        # the reply) or never closed it (strip_indre_tags removes it all).
+        if not visible_content.strip():
+            visible_content = strip_indre_tags(full_content)
+            if not visible_content:
+                logger.warning("No visible reply (stop_reason=%s)", final.stop_reason)
+                yield {"type": "error", "text": "Personaen svarede ikke. Prøv at sende beskeden igen."}
+                return
+            yield {"type": "visible", "text": visible_content}
 
         # Final event with complete content
         yield {
