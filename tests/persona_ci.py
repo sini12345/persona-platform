@@ -1175,17 +1175,21 @@ def run_api_test(persona: str, scenario_num: int, student_msg: str) -> str:
     system_prompt = system_prompt.replace("{{scenario_situation}}", "Første møde")
 
     client = anthropic.Anthropic()
+    # Same model, token limit and message shape as the app (app/config.py,
+    # app/claude_client.py): no prefill, the system prompt makes the model
+    # open with <indre> itself.
     response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=512,
+        model=os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6"),
+        max_tokens=int(os.getenv("MAX_TOKENS", "1024")),
         system=system_prompt,
-        messages=[
-            {"role": "assistant", "content": "<indre>"},  # Prefill
-            {"role": "user", "content": student_msg},
-        ],
+        messages=[{"role": "user", "content": student_msg}],
     )
 
-    return "<indre>" + response.content[0].text
+    if response.stop_reason in ("refusal", "max_tokens"):
+        category = getattr(getattr(response, "stop_details", None), "category", None)
+        return f"STOP_REASON={response.stop_reason} category={category}"
+
+    return "".join(b.text for b in response.content if b.type == "text")
 
 
 def run_tests(tests: list[TestSpec], use_api: bool = False, verbose: bool = False) -> list[TestResult]:
